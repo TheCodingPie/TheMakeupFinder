@@ -1,7 +1,8 @@
 const express = require("express");
 const app = express();
+const cookieAge=10*60*1000//in miliseconds
 app.use((req, res, next) => {
-	res.header('Access-Control-Allow-Origin', '*');
+	res.header('Access-Control-Allow-Origin', req.header('origin'));
 	res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
 	res.header(
 		"Access-Control-Allow-Headers",
@@ -13,7 +14,7 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: '1mb' }));
 var session = require('express-session');
 app.set('trust proxy', 1)
-app.use(session({ secret: 'keyboard cat', cookie: { name: 'ime',maxAge:1000000000000}}));
+app.use(session({ secret: 'keyboard cat', cookie: { name: 'ime',maxAge:cookieAge}}));
 app.listen(1234, () => {
 	console.log("Server is listening on port: 1234");
 });
@@ -35,6 +36,7 @@ const driver = neo4j.driver("bolt://localhost", neo4j.auth.basic("neo4j", "sifra
 const bcrypt = require('bcrypt');
 
 app.get("/login/:id/:password", async (req, res) => {
+	console.log(req.sessionID);
 	let tosnd = false;
 	let id = req.params.id;
 	let password = req.params.password;

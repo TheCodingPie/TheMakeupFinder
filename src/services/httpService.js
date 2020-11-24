@@ -4,7 +4,10 @@ export default class httpService {
       try 
       {
           const fetchUrl= domain + 'login/' + id + "/" + password;
-          const response= await fetch(fetchUrl);
+          const response= await fetch(fetchUrl,{
+            method: 'GET',
+            credentials: 'include'
+          });
          if (response.status !== 200) {
              return false //"Looks like there was a problem. Status Code: " + response.status
           } 

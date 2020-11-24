@@ -152,6 +152,7 @@ getLoginForm=()=>{
             </div>)
 }
   render() {
+    //TODO: add session check before displaying login page 
     return (
       <div className="celaStrana">
         <div className="horizontalno">
