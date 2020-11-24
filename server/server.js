@@ -7,12 +7,17 @@ app.use((req, res, next) => {
 		"Access-Control-Allow-Headers",
 		"Origin, X-Requested-With, Content-Type, Accept,Authorization"
 	);
+	res.header('Access-Control-Allow-Credentials',true );
 	next();
 });
 app.use(express.json({ limit: '1mb' }));
+var session = require('express-session');
+app.set('trust proxy', 1)
+app.use(session({ secret: 'keyboard cat', cookie: { name: 'ime',maxAge:1000000000000}}));
 app.listen(1234, () => {
 	console.log("Server is listening on port: 1234");
 });
+/*
 //-------------------------------------------------POVEZIVANJE NA CASSANDRU----------------------------------------------------------------------------------------
 const cassandra = require('cassandra-driver');
 const client = new cassandra.Client({ contactPoints: ['127.0.0.1'], keyspace: 'makeupfinder', localDataCenter: 'datacenter1' });
@@ -26,7 +31,7 @@ client.connect(function (err) {
 const neo4j = require('neo4j-driver')
 const driver = neo4j.driver("bolt://localhost", neo4j.auth.basic("neo4j", "sifra"));  //prvo je neo4j pa onda se stavlja password
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+*/
 const bcrypt = require('bcrypt');
 
 app.get("/login/:id/:password", async (req, res) => {
@@ -34,7 +39,7 @@ app.get("/login/:id/:password", async (req, res) => {
 	let id = req.params.id;
 	let password = req.params.password;
 	query = "SELECT * FROM person WHERE  username = ? ";
-
+/*
 	client.execute(query, [id], async  (err, result) =>{
 		if (result.rows.length > 0) 
 		{
@@ -54,6 +59,8 @@ app.get("/login/:id/:password", async (req, res) => {
 			loginArtist(res,id);	
 		}
 	});
+	*/
+	res.json('hello');
 });
 
 loginArtist= async (res,id)=>
