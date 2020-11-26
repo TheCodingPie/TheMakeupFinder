@@ -9,7 +9,8 @@ export default class Login extends Component {
       id: "",
       password: "",
       login: "nije",
-      color: "lightgrey"
+      color: "lightgrey",
+      renderPage:false
     };
   }
   handleChangeId=(event) => {
@@ -57,6 +58,31 @@ export default class Login extends Component {
           }
       }
   }
+componentDidMount = async() => {
+  console.log('componentDm')
+  let profileData = await httpService.sessionLogin();
+  console.log(profileData)
+  if(profileData)
+    {  
+    if (profileData.type == "Client") {
+      this.props.history.push({
+        pathname: `/booking`,
+        state: { person: profileData }
+      });
+    } 
+    else if (profileData.type == "Artist") {
+      this.props.history.push({
+        pathname: `/artistFirstPage`,
+        state: { person: profileData }
+      });
+    }
+    }
+    else{
+      console.log('componentDm else')
+      this.setState({ renderPage: true });
+    }
+}
+  
 getLoginForm=()=>{
   return(
    <div className="login">
@@ -152,15 +178,23 @@ getLoginForm=()=>{
             </div>)
 }
   render() {
-    //TODO: add session check before displaying login page 
-    return (
-      <div className="celaStrana">
-        <div className="horizontalno">
-          <div className="iznadIIspod1"></div>
-           {this.getLoginForm()}
-          <div className="iznadIIspod1"></div>
-        </div>
-      </div>
-    );
+    console.log('render')
+    if(this.state.renderPage)
+    {
+        return (
+              <div className="celaStrana">
+              <div className="horizontalno">
+                <div className="iznadIIspod1"></div>
+                {this.getLoginForm()}
+                <div className="iznadIIspod1"></div>
+              </div>
+            </div>
+          )
+        }
+          else {
+            return (null)
+          }
+      }
+    
   }
-}
+

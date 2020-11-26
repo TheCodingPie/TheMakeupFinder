@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
-const cookieAge=10*60*1000//in miliseconds
+const bcrypt = require('bcrypt');
+const cookieAge =  30 * 60 * 1000//in miliseconds
 app.use((req, res, next) => {
 	res.header('Access-Control-Allow-Origin', req.header('origin'));
 	res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
@@ -18,30 +19,92 @@ app.use(session({ secret: 'keyboard cat', cookie: { name: 'ime',maxAge:cookieAge
 app.listen(1234, () => {
 	console.log("Server is listening on port: 1234");
 });
-/*
+
 //-------------------------------------------------POVEZIVANJE NA CASSANDRU----------------------------------------------------------------------------------------
 const cassandra = require('cassandra-driver');
-const client = new cassandra.Client({ contactPoints: ['127.0.0.1'], keyspace: 'makeupfinder', localDataCenter: 'datacenter1' });
+ const client = new cassandra.Client({ contactPoints: ['127.0.0.1'], keyspace: 'makeupfinder', localDataCenter: 'datacenter1' });
 var assert = require('assert')
 client.connect(function (err) {
 	assert.ifError(err);
 });
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+
 //-------------------------------------------------POVEZIVANJE NA NEO4J--------------------------------------------------------------------------------------------
 const neo4j = require('neo4j-driver')
 const driver = neo4j.driver("bolt://localhost", neo4j.auth.basic("neo4j", "sifra"));  //prvo je neo4j pa onda se stavlja password
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-*/
-const bcrypt = require('bcrypt');
 
+
+app.get("/sessionLogin", async (req, res) => {
+	console.log('u sessionLogin')
+	console.log(req.sessionID);
+	let username = await sessionExists(req.sessionID)
+	console.log('u sessionLogin username:')
+	console.log(username) 
+	if(username)
+		{	console.log('upao')
+			getUserData(username,res);
+		}
+		else
+		{
+			res.json(false);
+		}
+});
+
+getUserData=(username,res) => {
+	console.log('getuserdata')
+	console.log(username)
+	query = "SELECT * FROM person WHERE  username = ? ";
+	
+	client.execute(query, [username], async  (err, result) =>{
+		if (result.rows.length > 0) 
+		{
+				tosnd = {};
+				tosnd["username"] = result.rows[0].username;
+				tosnd["email"] = result.rows[0].email;
+				tosnd["lastname"] = result.rows[0].lastname;
+				tosnd["name"] = result.rows[0].name;
+				tosnd["type"] = "Client"
+				res.json(tosnd);
+				return;
+		}
+		else 
+		{
+			getArtistData(username,res);
+		}
+			
+	});
+}
+getArtistData = async (username,res)=>{
+	
+	query = "SELECT * FROM makeupartist WHERE  username = ? ";
+	let resu = await client.execute(query, [username]);
+
+		tosnd = {};
+		tosnd["username"] = resu.rows[0].username;
+		tosnd["email"] = resu.rows[0].email;
+		tosnd["lastname"] = resu.rows[0].lastname;
+		tosnd["name"] = resu.rows[0].name;
+		tosnd["type"] = "Artist",
+		tosnd["city"] = resu.rows[0].city;
+		tosnd["description"] = resu.rows[0].description;
+		tosnd["numofreviews"] = resu.rows[0].numofreviews;
+		tosnd["stars"] = resu.rows[0].stars;
+		tosnd["timeslot"] = resu.rows[0].timeslot;
+		tosnd["price"] = resu.rows[0].price;
+		res.json(tosnd);
+				return;
+	
+}
 app.get("/login/:id/:password", async (req, res) => {
+	console.log('u login')
 	console.log(req.sessionID);
 	let tosnd = false;
 	let id = req.params.id;
 	let password = req.params.password;
 	query = "SELECT * FROM person WHERE  username = ? ";
-/*
+
 	client.execute(query, [id], async  (err, result) =>{
 		if (result.rows.length > 0) 
 		{
@@ -53,19 +116,36 @@ app.get("/login/:id/:password", async (req, res) => {
 				tosnd["lastname"] = result.rows[0].lastname;
 				tosnd["name"] = result.rows[0].name;
 				tosnd["type"] = "Client"
+				addSession(req.sessionID,id)
 			}
 			res.json(tosnd);
 		}
 		else 
 		{
-			loginArtist(res,id);	
+			loginArtist(res,id,req.sessionID);	
 		}
 	});
-	*/
-	res.json('hello');
 });
 
-loginArtist= async (res,id)=>
+sessionExists= async (sessionID) => {
+	query = "SELECT * FROM sessions WHERE  sessionID = ? ";
+	 let result = await client.execute(query, [sessionID])
+		if (result.rows.length > 0) 
+		{
+			return result.rows[0].username;
+		}
+		else 
+		{
+			return false;	
+		}	
+}
+
+addSession=(sessionID,username)=>{
+	query = "INSERT INTO sessions(sessionID,username) VALUES (?,?);";
+				client.execute(query, [sessionID,username]);
+
+}
+loginArtist= async (res,id,sessionID)=>
 {
 	query = "SELECT * FROM makeupartist WHERE  username = ? ";
 	let resu = await client.execute(query, [id]);
@@ -83,6 +163,7 @@ loginArtist= async (res,id)=>
 		tosnd["stars"] = resu.rows[0].stars;
 		tosnd["timeslot"] = resu.rows[0].timeslot;
 		tosnd["price"] = resu.rows[0].price;
+		addSession(sessionID,id)
 	}
 	else 
 	{

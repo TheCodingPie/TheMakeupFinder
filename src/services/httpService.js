@@ -21,9 +21,31 @@ export default class httpService {
         return false;
      }
 
-
-
   }
+
+  static sessionLogin = async () => {
+    try 
+    {
+        const fetchUrl= domain + 'sessionLogin/';
+        const response= await fetch(fetchUrl,{
+          method: 'GET',
+          credentials: 'include'
+        });
+        console.log(response);
+       if (response.status !== 200) {
+           return false //"Looks like there was a problem. Status Code: " + response.status
+        } 
+        else {
+          return response.json();
+        }
+    }
+   catch (e) 
+   {
+      console.log(e);
+      return false;
+   }
+
+}
     static createClient = async (username,password,name,lastname,email)=>
     {
         const fetchUrl= domain + 'createClient/' + username + "/" + password + "/" + name + "/" + lastname + "/" + email;
