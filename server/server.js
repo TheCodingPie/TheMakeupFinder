@@ -2,6 +2,10 @@ const express = require("express");
 const app = express();
 const bcrypt = require('bcrypt');
 const cookieAge =  30 * 60 * 1000//in miliseconds
+const dataLayer = require('./dataLayer.js');
+const client = dataLayer.cassandraClient;
+const driver = dataLayer.neo4jDriver;
+var session = require('express-session');
 app.use((req, res, next) => {
 	res.header('Access-Control-Allow-Origin', req.header('origin'));
 	res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
@@ -13,28 +17,11 @@ app.use((req, res, next) => {
 	next();
 });
 app.use(express.json({ limit: '1mb' }));
-var session = require('express-session');
-app.set('trust proxy', 1)
 app.use(session({ secret: 'keyboard cat', cookie: { name: 'ime',maxAge:cookieAge}}));
+app.set('trust proxy', 1);
 app.listen(1234, () => {
 	console.log("Server is listening on port: 1234");
 });
-
-//-------------------------------------------------POVEZIVANJE NA CASSANDRU----------------------------------------------------------------------------------------
-const cassandra = require('cassandra-driver');
- const client = new cassandra.Client({ contactPoints: ['127.0.0.1'], keyspace: 'makeupfinder', localDataCenter: 'datacenter1' });
-var assert = require('assert')
-client.connect(function (err) {
-	assert.ifError(err);
-});
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-//-------------------------------------------------POVEZIVANJE NA NEO4J--------------------------------------------------------------------------------------------
-const neo4j = require('neo4j-driver')
-const driver = neo4j.driver("bolt://localhost", neo4j.auth.basic("neo4j", "sifra"));  //prvo je neo4j pa onda se stavlja password
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 
 app.get("/sessionLogin", async (req, res) => {
 	console.log('u sessionLogin')
