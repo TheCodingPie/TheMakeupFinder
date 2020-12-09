@@ -14,6 +14,19 @@
   align-items: center;
   flex-direction: column;
 }
+.butto {
+  display: flex;
+  height: 10%;
+}
+.left {
+  display: flex;
+  flex: 1;
+}
+.zaDugmice {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+}
 .iznadIIspod {
   display: flex;
   flex: 1;
@@ -31,16 +44,39 @@
   border-radius: 2;
   flex: 20;
 }
+.form {
+  display: flex;
+  flex-direction: column;
+}
 .horizontalno {
   display: flex;
   flex: 0.5;
   flex-direction: row;
   width: 100%;
 }
-.zaDugmice {
+.loginButton {
+  background-color: #ff0178;
+  color: blue;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex: 2;
+  border-radius: 5px;
+  border: 0px;
+}
+.createProfileButton {
+  background-color: blue;
+  color: white;
+  align-items: center;
+  justify-content: center;
   display: flex;
   flex: 1;
-  flex-direction: row;
+  border-radius: 5px;
+  border: 0px;
+}
+.zaDugmice {
+  display: flex;
+  flex: 0.4;
 }
 h1,
 h2,

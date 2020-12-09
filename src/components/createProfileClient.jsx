@@ -2,56 +2,32 @@ import React, { Component } from "react";
 import "../style/login.css";
 import {Modal,Button} from 'react-bootstrap'
 import httpService from "../services/httpService"
+import CreateProfileForm from './createProfileForm'
+import PopupModal from "./popupModal";
 export default class CreateProfileClient extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      username: "",
-      password: "",
       login: "nije",
-      name: "",
-      lastname: "",
-      email: "",
       successful: "",
       borderColor: "lightgray",
       modalShow:false,
     };
   }
-  handleChangeUsername=(event) =>{
-    this.setState({
-      username: event.target.value,
-      borderColor: "lightgrey",
-      successful: ""
-    });
-  }
 
-  handleChangePassword = (event)=> {
-    this.setState({ password: event.target.value });
-  }
-
-  handleChangeName = (event)=> {
-    this.setState({ name: event.target.value });
-  }
-  handleChangeLastname = (event)=> {
-    this.setState({ lastname: event.target.value });
-  }
-  handleChangeEmail = (event)=> {
-    this.setState({ email: event.target.value });
-  }
-
-  createClient = async () => {
+  createClient = async (username,password ,name ,lastname ,email) => {
     if (
-      this.state.username == "" ||
-      this.state.password == "" ||
-      this.state.name == "" ||
-      this.state.lastname == "" ||
-      this.state.email == ""
+      username == "" ||
+      password == "" ||
+      name == "" ||
+      lastname == "" ||
+      email == ""
     ) {
      this.setState({modalShow:true});
       return;
     }
-    let response= await httpService.createClient(this.state.username, this.state.password, this.state.name, this.state.lastname, this.state.email)        
+    let response= await httpService.createClient(username, password, name, lastname, email)        
     if (response == "error")
     {
             this.setState({
@@ -73,6 +49,7 @@ export default class CreateProfileClient extends Component {
        });
      }  
   }
+  closeModal=()=>{this.setState({modalShow:false})}
   getModal = ()=> {
    return( <Modal
     show={this.state.modalShow}
@@ -91,93 +68,18 @@ export default class CreateProfileClient extends Component {
     </Modal.Footer>
   </Modal>)
   }
-  getForm=()=>{
-
-    return( <div className="login">
-    <h3
-      style={{
-        alignSelf: "center"
-      }}
-    >
-      Kreiranje profila
-    </h3>
-
-    <div className="form-group">
-      <label>Korisnicko ime</label>
-      <input
-        type="text"
-        placeholder="Unesite korisnicko ime"
-        onChange={this.handleChangeUsername}
-        style={{
-          borderColor: this.state.borderColor
-        }}
-      />
-    </div>
-
-    <div className="form-group">
-      <label>Sifra</label>
-      <input
-        type="password"
-        placeholder="Unesite sifru"
-        onChange={this.handleChangePassword}
-      />
-    </div>
-
-    <div className="form-group">
-      <label>Ime</label>
-      <input
-        type="text"
-        placeholder="Unesite vase ime"
-        onChange={this.handleChangeName}
-      />
-    </div>
-
-    <div className="form-group">
-      <label>Prezime</label>
-      <input
-        type="text"
-        placeholder="Unesite vase prezime"
-        onChange={this.handleChangeLastname}
-      />
-    </div>
-    <div className="form-group">
-      <label>E mail</label>
-      <input
-        type="email"
-        placeholder="Unesite vas email"
-        onChange={this.handleChangeEmail}
-      />
-    </div>
-
-    <button
-      type="submit"
-      className="btn btn-primary btn-block"
-      onClick={this.createClient}
-    >
-      Kreiraj profil
-    </button>
-    <label
-      style={{
-        alignSelf: "center",
-        color: "red"
-      }}
-    >
-      {this.state.successful}
-    </label>
-  </div>)
-
-  }
+ 
   render() {
     return (
       <div className="celaStrana">
         <div className="iznadIIspod"></div>
         <div className="horizontalno">
           <div className="iznadIIspod1"></div>
-          {this.getForm()}
+         <CreateProfileForm createClient={this.createClient} successful={this.state.successful}/>
           <div className="iznadIIspod1"></div>
         </div>
         <div className="iznadIIspod"></div>
-          {this.getModal()}
+          <PopupModal modalShow={this.state.modalShow} closeModal={this.closeModal}/>
       </div>
     );
   }

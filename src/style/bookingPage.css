@@ -98,14 +98,6 @@ body,
   flex-direction: column;
   flex: 1;
 }
-.butto {
-  display: flex;
-  flex-direction: row;
-}
-.left {
-  display: flex;
-  flex: 1;
-}
 .horizontalno {
   display: flex;
   flex: 11;
@@ -123,11 +115,6 @@ input[type="password"] {
   border: none;
   border-bottom: 1px solid lightgray;
   background-color: whitesmoke;
-}
-.zaDugmice {
-  display: flex;
-  flex-direction: row;
-  flex: 1;
 }
 body,
 .celaStrana,
