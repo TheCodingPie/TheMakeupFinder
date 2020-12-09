@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import "../style/login.css";
-import {Modal,Button} from 'react-bootstrap'
 import httpService from "../services/httpService"
 import CreateProfileForm from './createProfileForm'
 import PopupModal from "./popupModal";
@@ -17,13 +16,8 @@ export default class CreateProfileClient extends Component {
   }
 
   createClient = async (username,password ,name ,lastname ,email) => {
-    if (
-      username == "" ||
-      password == "" ||
-      name == "" ||
-      lastname == "" ||
-      email == ""
-    ) {
+    if (username == "" || password == "" || name == "" || lastname == "" || email == "" )
+    {
      this.setState({modalShow:true});
       return;
     }
@@ -50,24 +44,6 @@ export default class CreateProfileClient extends Component {
      }  
   }
   closeModal=()=>{this.setState({modalShow:false})}
-  getModal = ()=> {
-   return( <Modal
-    show={this.state.modalShow}
-    size="md"
-    aria-labelledby="contained-modal-title-vcenter"
-    centered
-  >
-    <div className="justify-content-center row">
-      <label>Unesite sve podatke</label>
-    </div>
-    <Modal.Body className="justify-content-center col ">
-      <div className="justify-content-center row"></div>
-    </Modal.Body>
-    <Modal.Footer>
-      <Button onClick={()=>this.setState({modalShow:false})}>U redu</Button>
-    </Modal.Footer>
-  </Modal>)
-  }
  
   render() {
     return (

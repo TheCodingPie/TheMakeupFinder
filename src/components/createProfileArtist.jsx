@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import "../style/login.css";
-import {Modal,Button} from 'react-bootstrap'
 import httpService from "../services/httpService"
 import CreateArtistForm from './createArtistForm'
 import PopupModal from "./popupModal";
@@ -13,7 +12,6 @@ export default class CreateProfileArtist extends Component {
     };
   }
  
-  
   createArtist = async (username, password, name, lastname, email, city, timeslotLength, price) => {
     if( username==""|| password==""|| name==""|| lastname==""|| email==""|| city==""|| timeslotLength==0|| price==0)
     {
@@ -58,7 +56,6 @@ export default class CreateProfileArtist extends Component {
     return data;
   }
   closeModal=()=>{this.setState({modalShow:false})};
-  
 
   render() {
     return (
