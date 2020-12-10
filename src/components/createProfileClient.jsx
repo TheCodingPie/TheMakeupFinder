@@ -6,7 +6,6 @@ import PopupModal from "./popupModal";
 export default class CreateProfileClient extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       login: "nije",
       successful: "",
