@@ -5,8 +5,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import httpService from "../services/httpService"
 import BookingNavbar from './bookingNavbar'
 import BookingForm from './bookingForm'
+import AvaliableArtistsModal from './avaliableArtistsModal'
 
-export default class Booking extends React.Component {
+export default class ClientHomePage extends React.Component {
   constructor(props) {
     super(props);
     if (this.props.location.state == undefined) {
@@ -17,10 +18,13 @@ export default class Booking extends React.Component {
         person: this.props.location.state.person,
         parsedDate: "",
         message: "",
+        cities: [],
+        showModal: false,
+        artists: [],
+        date: ""
       };
     }
   }
-
   goToArtistProfile = async selected => {
     if (selected.length === 0) return;
     let artistInfo = await httpService.getArtist(selected[0]);
@@ -33,14 +37,7 @@ export default class Booking extends React.Component {
   findArtists = async (timeFrom, timeTo, date, priceFrom, priceTo, city) => {
     let response = await httpService.findArtists(timeFrom, timeTo, city, priceFrom, priceTo, date)
     if (typeof response === "object" || response === []) {
-      this.props.history.push({
-        pathname: "/showAvaliableArtists",
-        state: {
-          artists: response,
-          client: this.state.person,
-          date: this.state.parsedDate
-        }
-      });
+      this.setState({ showModal: true, artists: response, date });
     } else {
       this.setState({ message: response });
     }
@@ -58,6 +55,14 @@ export default class Booking extends React.Component {
       this.props.history.replace({ pathname: `/` });
     }
   }
+  closeModal = () => this.setState({ showModal: false, success: false });
+
+  bookDate = async artist => {
+    const response = await httpService.bookAppointment(artist.username, this.state.date, artist.timeStarts, this.state.person.username)
+    if (response) {
+      this.setState({ success: true });
+    }
+  };
   render() {
     return (
       <div className="celaStrana">
@@ -67,10 +72,12 @@ export default class Booking extends React.Component {
             display: "flex",
             width: "45%",
             alignItems: "center",
-            flex: 30
-          }} >
-          <BookingForm findArtists={this.findArtists} message={this.state.message} />
+            flex: 1
+          }}>
+          <BookingForm findArtists={this.findArtists} message={this.state.message} cities={this.state.cities} />
+
         </div>
+        <AvaliableArtistsModal success={this.state.success} showModal={this.state.showModal} closeModal={this.closeModal} artists={this.state.artists} bookDate={this.bookDate} />
       </div>
     );
   }

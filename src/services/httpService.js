@@ -22,6 +22,47 @@ export default class httpService {
 
   }
 
+  static getBookings = async (username) => {
+    try {
+      const fetchUrl = domain + 'returnBookingsForClient/' + username;
+      const response = await fetch(fetchUrl, {
+        method: 'GET',
+        credentials: 'include'
+      });
+      if (response.status !== 200) {
+        return false //"Looks like there was a problem. Status Code: " + response.status
+      }
+      else {
+        return response.json();
+      }
+    }
+    catch (e) {
+      console.log(e);
+      return false;
+    }
+
+  }
+
+  static getCities = async () => {
+    try {
+      const fetchUrl = domain + 'getCities';
+      const response = await fetch(fetchUrl, {
+        method: 'GET',
+        credentials: 'include'
+      });
+      if (response.status !== 200) {
+        return false //"Looks like there was a problem. Status Code: " + response.status
+      }
+      else {
+        return response.json();
+      }
+    }
+    catch (e) {
+      console.log(e);
+      return false;
+    }
+
+  }
   static sessionLogin = async () => {
     try {
       const fetchUrl = domain + 'sessionLogin/';
@@ -54,7 +95,38 @@ export default class httpService {
       const fetchUrl = domain + 'getUsernames/' + firstLetter;
       const response = await fetch(fetchUrl, options);
       if (response.status !== 200) {
-        return false //"Looks like there was a problem. Status Code: " + response.status
+        return false
+      }
+      else {
+        return response.json();
+      }
+    }
+    catch (e) {
+      console.log(e);
+      return false;
+    }
+
+  }
+
+  static bookAppointment = async (artistUsername, date, time, clientUsername) => {
+
+    try {
+      const data = {
+        artistUsername,
+        date: "d" + date,
+        time,
+        clientUsername
+      };
+      const options = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      };
+
+      const fetchUrl = domain + 'bookAppointment/';
+      const response = await fetch(fetchUrl, options);
+      if (response.status !== 200) {
+        return false
       }
       else {
         return response.json();
@@ -87,6 +159,37 @@ export default class httpService {
       const response = await fetch(fetchUrl, options);
       if (response.status !== 200) {
         return false //"Looks like there was a problem. Status Code: " + response.status
+      }
+      else {
+        return response.json();
+      }
+    }
+    catch (e) {
+      console.log(e);
+      return false;
+    }
+
+  }
+
+  static freeDate = async (username, date, timeFrom, timeTo, appointments) => {
+    try {
+      const data = {
+        artistUsername: username,
+        date: "d" + date,
+        timeFrom,
+        timeTo,
+        appointments
+      };
+      const options = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+        credentials: 'include'
+      };
+      const fetchUrl = domain + 'freeDate/';
+      const response = await fetch(fetchUrl, options);
+      if (response.status !== 200) {
+        return false
       }
       else {
         return response.json();

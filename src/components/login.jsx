@@ -8,89 +8,83 @@ export default class Login extends Component {
     super(props);
     this.state = {
       color: "lightgrey",
-      renderPage:false
+      renderPage: false
     };
   }
-   login = async (username,password) => {
-    if(username=="" || password=="")
-    {
+  login = async (username, password) => {
+    if (username == "" || password == "") {
       this.setState({ color: "red" });
     }
     else {
-      let profileData= await httpService.login(username,password)                   
+      let profileData = await httpService.login(username, password)
       console.log(profileData);
-      if(!profileData)
-      {
+      if (!profileData) {
         this.setState({ color: "red" });
       }
-      else 
-      {
-          if (profileData.type == "Client") {
-            this.props.history.push({
-              pathname: `/booking`,
-              state: { person: profileData }
-            });
-          } 
-          else if (profileData.type == "Artist") {
-            this.props.history.push({
-              pathname: `/artistFirstPage`,
-              state: { person: profileData }
-            });
-          }
+      else {
+        if (profileData.type == "Client") {
+          this.props.history.push({
+            pathname: `/clientHomePage`,
+            state: { person: profileData }
+          });
+        }
+        else if (profileData.type == "Artist") {
+          this.props.history.push({
+            pathname: `/artistFirstPage`,
+            state: { person: profileData }
+          });
         }
       }
+    }
   }
-componentDidMount = async() => {
+  componentDidMount = async () => {
 
-  let profileData = await httpService.sessionLogin();
-  console.log(profileData)
-  if(profileData)
-    {  
-    if (profileData.type == "Client") {
-      this.props.history.push({
-        pathname: `/booking`,
-        state: { person: profileData }
-      });
-    } 
-    else if (profileData.type == "Artist") {
-      this.props.history.push({
-        pathname: `/artistFirstPage`,
-        state: { person: profileData }
-      });
+    let profileData = await httpService.sessionLogin();
+    console.log(profileData)
+    if (profileData) {
+      if (profileData.type == "Client") {
+        this.props.history.push({
+          pathname: `/clientHomePage`,
+          state: { person: profileData }
+        });
+      }
+      else if (profileData.type == "Artist") {
+        this.props.history.push({
+          pathname: `/artistFirstPage`,
+          state: { person: profileData }
+        });
+      }
     }
-    }
-    else{
+    else {
       this.setState({ renderPage: true });
     }
-}
-createProfileArtist = () => {
-  this.props.history.push({
-    pathname: `/createArtist`
-  });
-};
-createProfileClient = () => {
-  this.props.history.push({
-    pathname: `/createClient`
-  });
-};
+  }
+  createProfileArtist = () => {
+    this.props.history.push({
+      pathname: `/createArtist`
+    });
+  };
+  createProfileClient = () => {
+    this.props.history.push({
+      pathname: `/createClient`
+    });
+  };
   render() {
-      if(this.state.renderPage)
-      {
-        return (
-                <div className="celaStrana">
-                <div className="horizontalno">
-                  <div className="iznadIIspod1"></div>
-                <LoginForm login={this.login} color={this.state.color} createProfileClient={this.createProfileClient} createProfileArtist={this.createProfileArtist}/>
-                  <div className="iznadIIspod1" ></div>
-                </div>
-              </div>
-            )
-      }
-    else 
-    {
+    if (this.state.renderPage) {
+      return (
+        <div className="celaStrana">
+          <div className="horizontalno">
+            <div className="iznadIIspod1"></div>
+            <LoginForm login={this.login} color={this.state.color} createProfileClient={this.createProfileClient} createProfileArtist={this.createProfileArtist} />
+            <div className="iznadIIspod1" ></div>
+          </div>
+        </div>
+      )
+    }
+    else {
       return (null)
     }
   }
-    
+
 }
 

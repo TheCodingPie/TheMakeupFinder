@@ -426,4 +426,148 @@ app.get("/artistInfo/:id", async (req, res) => {
 
 });
 
+app.get("/getCities", async (req, res) => {
+	var session = driver.session();
+	var cypher = "match (c:City) return c.name";
+	var params = {};
+	var result = await session.run(cypher, params);
+	var toReturn = await (async (result) => {
+		return result.records.map(record => {
+			return record.get(0)
 
+		})
+	})(result);
+	await session.close();
+	res.json(toReturn);
+})
+app.get("/returnBookingsForClient/:username", async (req, res) => {
+
+	let id = req.params.username;
+	let session = driver.session();
+	const cypher = "match (c:Client{name:$client})-[r:BOOKED]->(a:Artist) return  r as rel ,a as artist";
+	let params = { client: id };
+	let result = await session.run(cypher, params);
+	session.close();
+	toRet = [];
+	result.records.forEach((row, i) => {
+		toRet.push({ artist: row._fields[1].properties.name, price: row._fields[1].properties.price, date: row._fields[0].properties.date, seen: row._fields[0].properties.seen.low, time: row._fields[0].properties.time })
+		console.log(row._fields[1].name);
+	})
+
+	res.json(toRet);
+
+});
+
+
+app.post("/freeDate/", async (req, res) => {
+	let id = req.body.artistUsername;
+	let date = req.body.date;
+	let slots = req.body.appointments;
+	let mapslot = {};
+	slots.forEach((x) => {
+		mapslot[x] = 'false';
+	})
+
+	let helpme = JSON.stringify(mapslot).replace(/\"/g, "'")
+
+	let tosnde = await addDateColumnIfNotExist(date, id, helpme, req.body.timeFrom, req.body.timeTo);
+	console.log(tosnde)
+	res.json(tosnde);
+});
+
+async function addDateColumnIfNotExist(date, id, toAdd, timeFrom, timeTo) {
+
+	query = "SELECT * FROM system_schema.columns WHERE keyspace_name = 'MakeUp' and table_name='makeupartist' and column_name='" + date + "' ;";
+	const result = await client.execute(query);
+	let pom = date + 'time';
+	if (result.rows.length == 0) {
+
+		query = "alter table makeupartist add ( " + date + " map<text,text> , " + pom + " list<text>) ";
+
+		await client.execute(query);
+		query = "update  makeupartist set " + date + "= " + toAdd + " ,datesfreed=['" + date + "'] + datesfreed ," + pom + "=['" + timeFrom + "' , '" + timeTo + "'] where  username='" + id + "' ;";
+
+		await client.execute(query);
+
+
+	}
+	else {
+		query = "SELECT " + date + " from makeupartist where username=? ;";
+		const result = await client.execute(query, [id]);
+
+
+		if (result.first()[date] == null) {
+			query = "update  makeupartist set " + date + "= " + toAdd + " ,datesfreed=['" + date + "'] + datesfreed ," + pom + "=['" + timeFrom + "' , '" + timeTo + "'] where  username='" + id + "' ;";
+
+			await client.execute(query);
+		}
+		else {
+			query = "select " + pom + " from makeupartist where  username=?"
+			let timeAlreadyFreed = await client.execute(query, [id]);
+			let dates = timeAlreadyFreed.first()[pom];
+			let from, to, toBreak;
+			toBreak = false;
+			for (let i = 0; i < dates.length; i += 2) {
+				if (toBreak)
+					break;
+				from = dates[i];
+				to = dates[i + 1];
+
+				if ((timeFrom >= from && timeFrom <= to) || (timeTo >= from && timeTo <= to))
+					toBreak = true;
+
+
+			}
+			if (toBreak)
+				return "Nije validno vreme"
+
+			query = "update  makeupartist set " + date + "= " + date + "+ " + toAdd + " ," + pom + "=['" + timeFrom + "' , '" + timeTo + "'] +" + pom + " where  username='" + id + "' ;";
+
+
+			await client.execute(query);
+
+		}
+
+	}
+	let datesFreed = await returnDatesForArtist(id);
+	if (!datesFreed.includes(date))
+		await updateDatesFreed(id, date);
+
+	return "Uspesno dodato";
+
+
+}
+
+app.post("/bookAppointment", async (req, res) => {
+
+
+	let id = req.body.artistUsername;
+	let date = req.body.date;
+	let time = req.body.time;
+	let clientUsername = req.body.clientUsername;
+
+	query = "update makeupartist set " + date + "['" + time + "']='true' where  username='" + id + "';";
+	client.execute(query);
+
+	let session = driver.session();
+	let params = { clientUsername, artistUsername: id, time, date }
+	query = 'match (a:Artist{name:$artistUsername}), (c:Client{name:$clientUsername}) create  (c)-[r:BOOKED{date:$date,time:$time,seen:0,grade:-1}]->(a)'
+	await session.run(query, params);
+	session.close();
+	res.json('true');
+});
+async function returnDatesForArtist(username) {
+
+	let query = "select datesfreed from makeupartist where username=?";
+
+	const result = await client.execute(query, [username]);
+
+
+	return result.first()['datesfreed'];
+}
+async function updateDatesFreed(username, date) {
+
+	let query = "update makeupartist set datesfreed=[" + date + "] + datesfreed where  username=?";
+	const result = await client.execute(query, username);
+
+}

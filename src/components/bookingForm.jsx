@@ -4,13 +4,15 @@ import DatePicker from "react-datepicker";
 import TimePicker from "rc-time-picker";
 import moment from "moment";
 import { Button } from "react-bootstrap";
+import httpService from "../services/httpService"
 export default class BookingForm extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       priceFrom: 0,
       priceTo: 0,
-      city: "",
+      city: this.props.cities[0],
       date: "",
       timeFrom: moment().format("HH:mm"),
       timeTo: moment().format("HH:mm"),
@@ -18,7 +20,10 @@ export default class BookingForm extends React.Component {
       parsedDate: ""
     }
   }
-
+  componentDidMount = async () => {
+    await this.setState({ cities: await httpService.getCities() });
+    await this.setState({ city: this.state.cities[0] });
+  };
   handleChangeCity = (event) => {
     this.setState({ city: event.target.value });
   }
