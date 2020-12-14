@@ -120,7 +120,8 @@ export default class httpService {
       const options = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
+        credentials: 'include'
       };
 
       const fetchUrl = domain + 'bookAppointment/';
@@ -266,7 +267,8 @@ export default class httpService {
       const options = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
+        credentials: 'include'
       };
       const response = await fetch(fetchUrl, options);
       if (response.status !== 200) {

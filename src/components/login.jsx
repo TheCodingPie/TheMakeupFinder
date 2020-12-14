@@ -30,7 +30,7 @@ export default class Login extends Component {
         }
         else if (profileData.type == "Artist") {
           this.props.history.push({
-            pathname: `/artistFirstPage`,
+            pathname: `/artistHomePage`,
             state: { person: profileData }
           });
         }
@@ -50,7 +50,7 @@ export default class Login extends Component {
       }
       else if (profileData.type == "Artist") {
         this.props.history.push({
-          pathname: `/artistFirstPage`,
+          pathname: `/artistHomePage`,
           state: { person: profileData }
         });
       }

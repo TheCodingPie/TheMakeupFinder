@@ -36,10 +36,11 @@ export default class ClientHomePage extends React.Component {
 
   findArtists = async (timeFrom, timeTo, date, priceFrom, priceTo, city) => {
     let response = await httpService.findArtists(timeFrom, timeTo, city, priceFrom, priceTo, date)
-    if (typeof response === "object" || response === []) {
-      this.setState({ showModal: true, artists: response, date });
+    console.log(response)
+    if (Array.isArray(response) && response.length > 0) {
+      this.setState({ showModal: true, artists: response, date, message: "" });
     } else {
-      this.setState({ message: response });
+      this.setState({ message: (!Array.isArray(response)) ? response : "Nije pronadjen ni jedan sminker, pokusajte sa novim parametrima" });
     }
   };
   goToBookedAppointments = () => {
@@ -70,12 +71,12 @@ export default class ClientHomePage extends React.Component {
         <div
           style={{
             display: "flex",
-            width: "45%",
+            width: "30%",
             alignItems: "center",
-            flex: 1
+            justifyContent: 'center',
+            flex: 1,
           }}>
           <BookingForm findArtists={this.findArtists} message={this.state.message} cities={this.state.cities} />
-
         </div>
         <AvaliableArtistsModal success={this.state.success} showModal={this.state.showModal} closeModal={this.closeModal} artists={this.state.artists} bookDate={this.bookDate} />
       </div>

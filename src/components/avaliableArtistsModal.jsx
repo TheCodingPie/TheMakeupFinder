@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "../style/bookingPage.css";
 import { Modal, Button } from 'react-bootstrap'
-import httpService from "../services/httpService"
+import { ListGroup } from 'react-bootstrap'
 export default class AvaliableArtistsModal extends Component {
   constructor(props) {
     super(props);
@@ -39,11 +39,10 @@ export default class AvaliableArtistsModal extends Component {
     return (
       <Modal show={this.props.showModal} size="md" aria-labelledby="contained-modal-title-vcenter" centered onHide={this.onHide} >
         <Modal.Body className="justify-content-center col ">
-          {!this.props.success && this.props.artists.map((artist, index) => (
-            <div key={index} className="divCeo">
-              <div className="izmedju"></div>
-              <div className="divArtist">
-                <h2 style={{ alignSelf: 'center', color: 'blue' }}>{artist.username}</h2>
+          <ListGroup>
+            {!this.props.success && this.props.artists.map((artist, index) => (
+              <ListGroup.Item>
+                <h2 >{artist.username}</h2>
                 <div style={{ display: "flex", flexDirection: "row", flex: 1, width: '100%' }}>
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                     <label>Broj ocena: {artist.numofReviews}</label>
@@ -54,39 +53,14 @@ export default class AvaliableArtistsModal extends Component {
                     <label>Cena: {artist.price} din</label>
                   </div>
                 </div>
-                <div style={{ display: "flex", flexDirection: "row", flex: 1, width: '100%' }}>
-                  <button
-                    style={{
-                      backgroundColor: "white",
-                      color: "#ff0178",
-                      border: 1,
-                      borderColor: "#ff0178",
-                      borderStyle: "solid",
-                      flex: 1,
-                      backgroundColor: 'blue',
-                    }}
-                    onClick={() => this.viewProfile(artist)}
-                  >
-                    Videti profil
-                  </button>
-                  <button
-                    style={{
-                      backgroundColor: "white",
-                      color: "#ff0178",
-                      border: 1,
-                      borderColor: "#ff0178",
-                      borderStyle: "solid",
-                      backgroundColor: 'blue',
-                      flex: 1
-                    }}
-                    onClick={() => this.props.bookDate(artist)}
-                  >
-                    Zakazati
-                  </button>
+                <div style={{ display: "flex", flexDirection: "row", flex: 1, justifyContent: 'space-between' }}>
+                  <Button onClick={() => this.viewProfile(artist)}> Videti profil</Button>
+                  <div ></div>
+                  <Button onClick={() => this.props.bookDate(artist)}> Zakazati </Button>
                 </div>
-              </div>
-            </div>
-          ))}
+              </ListGroup.Item>
+            ))}
+          </ListGroup >
           {this.props.success && (<label style={{ color: "blue" }}>Uspesno ste zakazali termin </label>)}
         </Modal.Body>
         <Modal.Footer>

@@ -22,7 +22,6 @@ export default class BookedAppointmentsForUser extends Component {
 
   printBookings = () => {
     let elements = [];
-
     this.state.bookings.map(item =>
       elements.push(
         <ListGroup.Item style={{ backgroundColor: 'white', alignItems: 'center', display: 'flex', flexDirection: 'column' }} className="mb-2 mt-1">

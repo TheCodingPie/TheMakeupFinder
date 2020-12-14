@@ -369,7 +369,24 @@ app.post("/findArtist", async (req, res) => {
 
 	res.json(toReturn);
 })
+app.get("/returnAllAppointments/:id", async (req, res) => {
+	query = "SELECT * FROM makeupartist where username=?;";
+	const result = await client.execute(query, [req.params.id]);
+	let toReturn = {};
+	let arrayOfDates = result.rows[0].datesfreed;
+	toReturn["dates"] = arrayOfDates;
+	if (arrayOfDates == undefined)
+		res.json([]);
+	else {
+		arrayOfDates.forEach((day) => {
 
+			toReturn[day] = result.rows[0][day];
+		})
+
+
+		res.json(toReturn);
+	}
+})
 app.get("/getArtist/:id", async (req, res) => {
 
 
