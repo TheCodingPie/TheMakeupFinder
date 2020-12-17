@@ -64,6 +64,12 @@ export default class ClientHomePage extends React.Component {
       this.setState({ success: true });
     }
   };
+  viewArtistProfile = async artist => {
+    this.props.history.push({
+      pathname: "/artistProfile",
+      state: { person: artist, clientUsername: this.state.person.username }
+    });
+  };
   render() {
     return (
       <div className="celaStrana">
@@ -78,7 +84,7 @@ export default class ClientHomePage extends React.Component {
           }}>
           <BookingForm findArtists={this.findArtists} message={this.state.message} cities={this.state.cities} />
         </div>
-        <AvaliableArtistsModal success={this.state.success} showModal={this.state.showModal} closeModal={this.closeModal} artists={this.state.artists} bookDate={this.bookDate} />
+        <AvaliableArtistsModal success={this.state.success} showModal={this.state.showModal} closeModal={this.closeModal} artists={this.state.artists} bookDate={this.bookDate} viewArtistProfile={this.viewArtistProfile} />
       </div>
     );
   }

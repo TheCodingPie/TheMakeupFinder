@@ -4,7 +4,6 @@ export default class ArtistNavbar extends React.Component {
     constructor(props) {
         super(props);
     }
-
     render() {
         return (
             <div style={{ width: "100%" }} >
@@ -19,7 +18,7 @@ export default class ArtistNavbar extends React.Component {
                                 <button type="submit" className="btn " onClick={this.props.goToAddImage}>Dodaj sliku</button>
                                 <button type="submit" className="btn " onClick={this.props.goToAddDescription}>Dodaj opis</button>
                                 <NavDropdown.Divider />
-                                <NavDropdown.Item href="/">Odjavi se</NavDropdown.Item>
+                                <button type="submit" className="btn " onClick={this.props.logout}>Odjavi se</button>
                             </NavDropdown>
                         </Nav>
                     </Navbar.Collapse>

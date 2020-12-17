@@ -39,8 +39,6 @@ app.get("/sessionLogin", async (req, res) => {
 });
 
 getUserData = (username, res) => {
-	console.log('getuserdata')
-	console.log(username)
 	query = "SELECT * FROM person WHERE  username = ? ";
 
 	client.execute(query, [username], async (err, result) => {
@@ -114,6 +112,43 @@ app.get("/logout", async (req, res) => {
 
 	let isDeleted = await deleteSession(req.sessionID);
 	res.json(isDeleted);
+
+});
+
+app.post("/addComment", (req, res) => {
+	comment = req.body.comment;
+	params = [req.body.artistUsername]
+	query1 = "select * from comments where artistusername= ? ";
+
+	client.execute(query1, params, (err, result) => {//citanje broja kolona
+
+
+		colName = "comment" + (Object.keys(result.rows[0]).length - 1);
+		colCount = Object.keys(result.rows[0]).length - 2;
+
+		commCount = result.rows[0].artistcommnum + 1;
+
+		if (colCount > result.rows[0].artistcommnum) {//ne treba kolona da se dodaje
+			colName = "comment" + (result.rows[0].artistcommnum + 1);
+			queryDodajKomentar = "update comments set " + colName + " = '" + comment + "' , artistcommnum = " + commCount + " where artistUsername= ?";
+			client.execute(queryDodajKomentar, params, (err, result) => {//dodavanje komentara u prethodno kreiranu kolonu
+				res.json("Dodali ste komentar");
+			});
+
+		}
+		else {
+
+			query = " ALTER TABLE comments  ADD " + colName + " text ";
+			client.execute(query, (err, result) => {//ubacivanje kolone
+				queryDodajKomentar = "update comments set " + colName + " = '" + comment + "' , artistcommnum = " + commCount + " where artistUsername= ?";
+				client.execute(queryDodajKomentar, params, (err, result) => {//dodavanje komentara u prethodno kreiranu kolonu
+					res.json("Dodali ste komentar");
+				});
+			});
+
+		}
+
+	});
 
 });
 
@@ -297,8 +332,6 @@ app.get("/artistInfo/:id", async (req, res) => {
 
 	query = "SELECT * FROM makeupartist WHERE  username = ? ";
 	let resu = await client.execute(query, [id]);
-	console.log(resu);
-
 	tosnd = {};
 	tosnd["username"] = resu.rows[0].username;
 	tosnd["email"] = resu.rows[0].email;
@@ -315,6 +348,114 @@ app.get("/artistInfo/:id", async (req, res) => {
 	res.json(tosnd);
 
 });
+app.post('/addImageToImageTable', async function (req, res) {
+
+	var userame = req.body.username;
+	var tags = req.body.tags;
+	var url = req.body.url;
+	var about = req.body.about;
+	var newId = await returnNewIdImage(userame);
+	var countTags = tags.length;
+	await addImageToDatabase(newId, url, userame, about, countTags);
+	res.json(newId);
+});
+async function addImageToDatabase(newId, url, user_id, about, counterTags) {
+
+	var succesfull = false;
+	var query = "INSERT INTO images (id, url, idartist,about,counter_tag, datepost) values (?, ? ,? ,?, ? ,? )";
+	var params = [newId.toString(), url, user_id, about, counterTags, new Date()];
+	await client.execute(query, params, { prepare: true })
+		.then(succesfull = true).catch((err) => {
+			console.log('Error addImageToDatabase :-S', err);
+		});
+	return succesfull;
+}
+app.get("/getComments/:artistUsername", (req, res) => {
+
+	let params = [req.params.artistUsername]
+	let query = " select artistcommnum from comments where artistusername= ? ";
+
+	client.execute(query, params, (err, result) => {
+
+		if (result.rows[0] === undefined)
+			res.json([]);
+		else {
+			commNum = result.rows[0].artistcommnum;
+			colNames = "";
+			for (let i = 1; i <= commNum; i++)
+				colNames += " comment" + i + (i == commNum ? " " : " ,")
+			query = " select " + colNames + " from comments where artistusername= ? ";
+
+			client.execute(query, params, (err, result) => {
+				comments = [];
+				if (result !== undefined)
+					Object.keys(result.rows[0]).forEach(key => comments.push(result.rows[0][key]));
+				res.json(comments);
+
+
+			});
+		}
+	});
+
+});
+
+async function returnNewIdImage(idartist) {
+	var numberofId = 0;
+	var query = "select count(*) from images where idartist= ? "
+	var params = [idartist];
+	await client.execute(query, params, { prepare: true })
+		.then(res => numberofId = res.first()['count']);
+	return ++numberofId;
+}
+
+app.post("/addComment", (req, res) => {
+	comment = req.body.comment;
+	params = [req.body.artistUsername]
+	query1 = "select * from comments where artistusername= ? ";
+
+	client.execute(query1, params, (err, result) => {//citanje broja kolona
+
+
+		colName = "comment" + (Object.keys(result.rows[0]).length - 1);
+		colCount = Object.keys(result.rows[0]).length - 2;
+
+		commCount = result.rows[0].artistcommnum + 1;
+
+		if (colCount > result.rows[0].artistcommnum) {//ne treba kolona da se dodaje
+			colName = "comment" + (result.rows[0].artistcommnum + 1);
+			queryDodajKomentar = "update comments set " + colName + " = '" + comment + "' , artistcommnum = " + commCount + " where artistUsername= ?";
+			client.execute(queryDodajKomentar, params, (err, result) => {//dodavanje komentara u prethodno kreiranu kolonu
+				res.json("Dodali ste komentar");
+			});
+
+		}
+		else {
+
+			query = " ALTER TABLE comments  ADD " + colName + " text ";
+			client.execute(query, (err, result) => {//ubacivanje kolone
+				queryDodajKomentar = "update comments set " + colName + " = '" + comment + "' , artistcommnum = " + commCount + " where artistUsername= ?";
+				client.execute(queryDodajKomentar, params, (err, result) => {//dodavanje komentara u prethodno kreiranu kolonu
+					res.json("Dodali ste komentar");
+				});
+			});
+
+		}
+
+	});
+
+});
+app.get("/getImagesForArtist/:username", async (req, res) => {
+	var params = [req.params.username];
+	var images = [];
+	var query = "select url from images where idartist= ? ";
+	await client.execute(query, params, { prepare: true })
+		.then((response) => {
+			response.rows.forEach(row => images.push(row.url));
+		}).catch(function (err) {
+			console.log('Error returnAllTagsFromImage', err);
+		});
+	return res.json(images);
+})
 
 app.post("/findArtist", async (req, res) => {
 	let timeFrom = req.body.timeFrom;
@@ -350,7 +491,6 @@ app.post("/findArtist", async (req, res) => {
 	resu.rows.forEach((x, i) => {
 		let appointments = x.get("d" + req.body.date);
 		if (appointments != undefined || appointments != null) {
-			//console.log(appointments)
 			Object.keys(appointments).forEach(key => {
 				if (key >= timeFrom && key <= timeTo && appointments[key] == 'false') {
 					toReturn.push({
@@ -369,6 +509,21 @@ app.post("/findArtist", async (req, res) => {
 
 	res.json(toReturn);
 })
+
+app.get("/getNumberOfImages/:username", (req, res) => {
+
+	let params = [req.params.username];
+	let query;
+	query = "select count(*) from images where idartist= ? ";
+
+	client.execute(query, params, function (err, result) {
+
+		var numberOfImages = result.first()['count'];
+		console.log(numberOfImages)
+		res.json(numberOfImages);
+
+	});
+});
 app.get("/returnAllAppointments/:id", async (req, res) => {
 	query = "SELECT * FROM makeupartist where username=?;";
 	const result = await client.execute(query, [req.params.id]);
@@ -405,7 +560,6 @@ app.get("/getArtist/:id", async (req, res) => {
 		tosnd["name"] = resu.rows[0].name;
 		tosnd["type"] = "Artist",
 			tosnd["city"] = resu.rows[0].city;
-		console.log(resu.rows[0].city)
 		tosnd["description"] = resu.rows[0].description;
 		tosnd["numofreviews"] = resu.rows[0].numofreviews;
 		tosnd["stars"] = resu.rows[0].stars;
@@ -424,8 +578,6 @@ app.get("/artistInfo/:id", async (req, res) => {
 
 	query = "SELECT * FROM makeupartist WHERE  username = ? ";
 	let resu = await client.execute(query, [id]);
-	console.log(resu);
-
 	tosnd = {};
 	tosnd["username"] = resu.rows[0].username;
 	tosnd["email"] = resu.rows[0].email;
@@ -468,7 +620,6 @@ app.get("/returnBookingsForClient/:username", async (req, res) => {
 	toRet = [];
 	result.records.forEach((row, i) => {
 		toRet.push({ artist: row._fields[1].properties.name, price: row._fields[1].properties.price, date: row._fields[0].properties.date, seen: row._fields[0].properties.seen.low, time: row._fields[0].properties.time })
-		console.log(row._fields[1].name);
 	})
 
 	res.json(toRet);
@@ -486,9 +637,7 @@ app.post("/freeDate/", async (req, res) => {
 	})
 
 	let helpme = JSON.stringify(mapslot).replace(/\"/g, "'")
-
 	let tosnde = await addDateColumnIfNotExist(date, id, helpme, req.body.timeFrom, req.body.timeTo);
-	console.log(tosnde)
 	res.json(tosnde);
 });
 

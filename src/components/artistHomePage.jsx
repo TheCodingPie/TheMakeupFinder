@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ArtistNavbar from './artistNavbar'
 import Scheduler from './Scheduler'
+import httpService from "../services/httpService"
 export default class ArtistHomePage extends Component {
   constructor(props) {
     super(props);
@@ -24,7 +25,6 @@ export default class ArtistHomePage extends Component {
   };
 
   goToMyProfile = () => {
-
     this.props.history.push({
       pathname: `/artistProfile`,
       state: { person: this.state.myData, usernameForRecomending: this.state.myData.username }
@@ -37,12 +37,18 @@ export default class ArtistHomePage extends Component {
       pathname: `/addImagePage`,
       state: { person: this.state.myData }
     });
-
-  }; render() {
+  };
+  logout = async () => {
+    let response = await httpService.logout();
+    if (response) {
+      this.props.history.replace({ pathname: `/` });
+    }
+  }
+  render() {
 
     return (
       <div style={{ display: 'flex', flexGrow: 1, flexBasis: 1, flexDirection: 'column', width: '100%', alignItems: 'center', }}>
-        <ArtistNavbar goToAddImage={this.goToAddImage} goToMyProfile={this.goToMyProfile} goToAddDescription={this.goToAddDescription} goToFreeDates={this.goToFreeDates} />
+        <ArtistNavbar goToAddImage={this.goToAddImage} goToMyProfile={this.goToMyProfile} goToAddDescription={this.goToAddDescription} goToFreeDates={this.goToFreeDates} logout={this.logout} />
         <div
           style={{
             height: "80%",

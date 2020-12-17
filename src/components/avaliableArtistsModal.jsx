@@ -28,12 +28,7 @@ export default class AvaliableArtistsModal extends Component {
     }
     this.setState({ artists });
   };
-  viewProfile = async artist => {
-    this.props.history.push({
-      pathname: "/artistProfile",
-      state: { person: artist, clientUsername: this.state.client.username }
-    });
-  };
+
 
   render() {
     return (
@@ -54,7 +49,7 @@ export default class AvaliableArtistsModal extends Component {
                   </div>
                 </div>
                 <div style={{ display: "flex", flexDirection: "row", flex: 1, justifyContent: 'space-between' }}>
-                  <Button onClick={() => this.viewProfile(artist)}> Videti profil</Button>
+                  <Button onClick={() => this.props.viewArtistProfile(artist)}> Videti profil</Button>
                   <div ></div>
                   <Button onClick={() => this.props.bookDate(artist)}> Zakazati </Button>
                 </div>

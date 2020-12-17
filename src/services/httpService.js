@@ -9,7 +9,7 @@ export default class httpService {
         credentials: 'include'
       });
       if (response.status !== 200) {
-        return false //"Looks like there was a problem. Status Code: " + response.status
+        return false
       }
       else {
         return response.json();
@@ -30,7 +30,7 @@ export default class httpService {
         credentials: 'include'
       });
       if (response.status !== 200) {
-        return false //"Looks like there was a problem. Status Code: " + response.status
+        return false
       }
       else {
         return response.json();
@@ -63,6 +63,27 @@ export default class httpService {
     }
 
   }
+
+  static getComments = async (username) => {
+    try {
+      const fetchUrl = domain + 'getComments/' + username;
+      const response = await fetch(fetchUrl, {
+        method: 'GET',
+        credentials: 'include'
+      });
+      if (response.status !== 200) {
+        return false
+      }
+      else {
+        return response.json();
+      }
+    }
+    catch (e) {
+      console.log(e);
+      return false;
+    }
+
+  }
   static sessionLogin = async () => {
     try {
       const fetchUrl = domain + 'sessionLogin/';
@@ -71,7 +92,7 @@ export default class httpService {
         credentials: 'include'
       });
       if (response.status !== 200) {
-        return false //"Looks like there was a problem. Status Code: " + response.status
+        return false
       }
       else {
         return response.json();
@@ -159,7 +180,7 @@ export default class httpService {
       const fetchUrl = domain + 'findArtist/';
       const response = await fetch(fetchUrl, options);
       if (response.status !== 200) {
-        return false //"Looks like there was a problem. Status Code: " + response.status
+        return false
       }
       else {
         return response.json();
@@ -171,6 +192,35 @@ export default class httpService {
     }
 
   }
+
+  static addImageToImageTable = async (username, tags, url, about) => {
+    try {
+      const data = {
+        username, tags, url, about
+      };
+      const options = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+        credentials: 'include'
+      };
+
+      const fetchUrl = domain + 'addImageToimageTable/';
+      const response = await fetch(fetchUrl, options);
+      if (response.status !== 200) {
+        return false
+      }
+      else {
+        return response.json();
+      }
+    }
+    catch (e) {
+      console.log(e);
+      return false;
+    }
+
+  }
+
 
   static freeDate = async (username, date, timeFrom, timeTo, appointments) => {
     try {
@@ -188,6 +238,35 @@ export default class httpService {
         credentials: 'include'
       };
       const fetchUrl = domain + 'freeDate/';
+      const response = await fetch(fetchUrl, options);
+      if (response.status !== 200) {
+        return false
+      }
+      else {
+        return response.json();
+      }
+    }
+    catch (e) {
+      console.log(e);
+      return false;
+    }
+
+  }
+
+
+  static addComment = async (artistUsername, comment) => {
+    try {
+      const data = {
+        artistUsername,
+        comment
+      };
+      const options = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+        credentials: 'include'
+      };
+      const fetchUrl = domain + 'addComment/';
       const response = await fetch(fetchUrl, options);
       if (response.status !== 200) {
         return false
@@ -224,6 +303,51 @@ export default class httpService {
     }
 
   }
+
+
+  static getNumberOfImages = async (username) => {
+    try {
+      const fetchUrl = domain + 'getNumberOfImages/' + username
+      const options = {
+        method: "GET",
+        credentials: 'include'
+      };
+      const response = await fetch(fetchUrl, options);
+      if (response.status !== 200) {
+        return false
+      }
+      else {
+        return response.json();
+      }
+    }
+    catch (e) {
+      console.log(e);
+      return false;
+    }
+
+  }
+
+  static getImagesForArtist = async (username) => {
+    try {
+      const fetchUrl = domain + 'getImagesForArtist/' + username
+      const options = {
+        method: "GET",
+        credentials: 'include'
+      };
+      const response = await fetch(fetchUrl, options);
+      if (response.status !== 200) {
+        return false
+      }
+      else {
+        return response.json();
+      }
+    }
+    catch (e) {
+      console.log(e);
+      return false;
+    }
+
+  }
   static logout = async () => {
     try {
       const fetchUrl = domain + 'logout/';
@@ -232,7 +356,7 @@ export default class httpService {
         credentials: 'include'
       });
       if (response.status !== 200) {
-        return false //"Looks like there was a problem. Status Code: " + response.status
+        return false
       }
       else {
         return true;

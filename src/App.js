@@ -10,6 +10,9 @@ import ArtistHomePage from './components/artistHomePage'
 import FreeDate from './components/freeDate'
 import ClientHomePage from "./components/clientHomePage";
 import Scheduler from "./components/Scheduler";
+import ArtistProfile from "./components/artistProfile";
+import ImageUpload from './components/ImageUpload'
+import AddComment from "./components/addComment";
 function App() {
   return (
     <Router>
@@ -22,6 +25,9 @@ function App() {
         <Route path="/artistHomePage" component={ArtistHomePage} />
         <Route path="/freeDate" component={FreeDate} />
         <Route path="/scheduler" component={Scheduler} />
+        <Route path="/artistProfile" component={ArtistProfile} />
+        <Route path="/addImagePage" component={ImageUpload} />
+        <Route path="/addComment" component={AddComment} />
       </Switch>
     </Router>
   );
