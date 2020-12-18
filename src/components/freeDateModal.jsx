@@ -2,15 +2,16 @@ import React, { Component } from "react";
 import "rc-time-picker/assets/index.css";
 import "react-datepicker/dist/react-datepicker.css";
 import httpService from "../services/httpService"
-import VerticallyCenteredModal from './verticallyCenteredModal'
 import FreeDateForm from './freeDateForm'
-export default class FreeDate extends Component {
+import { Modal, Button } from 'react-bootstrap'
+
+export default class FreeDateModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
       errorMessage: "",
       clientUsername: "korisnik1",
-      myData: this.props.location.state.person,
+      myData: this.props.artist,
       modalShow: false,
       modalDates: "",
       modalData: ""
@@ -67,21 +68,18 @@ export default class FreeDate extends Component {
 
   render() {
     return (
-      <div className="celaStrana">
-        <div className="iznadIIspod"></div>
-        <div className="horizontalno">
-          <div className="iznadIIspod1"></div>
+      <Modal show={this.props.showModal} size="md" aria-labelledby="contained-modal-title-vcenter" centered onHide={this.onHide} >
+        <Modal.Body className="justify-content-center col ">
           <FreeDateForm freeDate={this.freeDate} errorMessage={this.state.errorMessage} />
-          <div className="iznadIIspod1"></div>
-        </div>
-        <div className="iznadIIspod"></div>
-        <VerticallyCenteredModal
-          show={this.state.modalShow}
-          data1={this.state.modalData}
-          data={this.state.modalDates}
-          onHide={() => this.setState({ modalShow: false })}
-        />
-      </div>
+          <div className="justify-content-center col">
+            <div>{this.state.modalData}</div>
+            <div>{this.state.modalDates}</div>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={this.props.closeModal}>Zatvori</Button>
+        </Modal.Footer>
+      </Modal>
     );
   }
 }

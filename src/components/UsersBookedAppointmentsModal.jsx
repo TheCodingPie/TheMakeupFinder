@@ -10,10 +10,6 @@ export default class UsersBookedAppointmentsModal extends Component {
       bookings: []
     };
   }
-  componentDidMount = async () => {
-    let bookings = await httpService.getBookings(this.props.clientUsername)
-    this.setState({ bookings });
-  };
 
   printBookings = () => {
     let elements = [];
@@ -38,9 +34,14 @@ export default class UsersBookedAppointmentsModal extends Component {
     return elements;
   };
 
+  getBookings = async () => {
+    let bookings = await httpService.getBookings(this.props.clientUsername)
+    this.setState({ bookings });
+  }
+
   render() {
     return (
-      <Modal show={this.props.showModal} size="md" aria-labelledby="contained-modal-title-vcenter" centered onHide={this.onHide} >
+      <Modal show={this.props.showModal} size="md" aria-labelledby="contained-modal-title-vcenter" centered onHide={this.onHide} onShow={this.getBookings} >
         <Modal.Body className="justify-content-center col ">
           <h3>Ovo su svi vasi zakazani termini</h3>
           <ListGroup >{this.printBookings()}</ListGroup>

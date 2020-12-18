@@ -6,7 +6,6 @@ import Login from "./components/login";
 import CreateProfileClient from "./components/createProfileClient";
 import CreateProfileArtist from "./components/createProfileArtist";
 import ArtistHomePage from './components/artistHomePage'
-import FreeDate from './components/freeDate'
 import ClientHomePage from "./components/clientHomePage";
 import Scheduler from "./components/Scheduler";
 import ArtistProfile from "./components/artistProfile";
@@ -21,7 +20,6 @@ function App() {
         <Route path="/createArtist" component={CreateProfileArtist} />
         <Route path="/clientHomePage" component={ClientHomePage} />
         <Route path="/artistHomePage" component={ArtistHomePage} />
-        <Route path="/freeDate" component={FreeDate} />
         <Route path="/scheduler" component={Scheduler} />
         <Route path="/artistProfile" component={ArtistProfile} />
         <Route path="/addImagePage" component={ImageUpload} />

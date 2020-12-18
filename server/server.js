@@ -460,12 +460,10 @@ app.get("/getImagesForArtist/:username", async (req, res) => {
 app.post("/findArtist", async (req, res) => {
 	let timeFrom = req.body.timeFrom;
 	let timeTo = req.body.timeTo;
-	console.log(timeFrom + " " + timeTo);
 	var session = driver.session();
 	var cypher = "match(c:City{name:$city})-[r:WORKS_IN]->(a:Artist)  where a.price>=" + parseInt(req.body.priceFrom) + " and a.price<" + parseInt(req.body.priceTo) + " return (a)";
 	var params = { city: req.body.city };
 	var result = await session.run(cypher, params);
-	console.log(result)
 	await session.close();
 	let artists = [];
 	let artistspirice = {}
@@ -473,15 +471,12 @@ app.post("/findArtist", async (req, res) => {
 		res.json("Nije pronadjen ni jedan sminker, pokusajte sa novim parametrima");
 		return;
 	}
-
 	result.records.forEach((x) => {
 		artists.push("'" + x._fields[0].properties.name + "'");
 		artistspirice[x._fields[0].properties.name] = x._fields[0].properties.price;
-		console.log(x._fields[0].properties.price);
 	})
 	let joinedArists = artists.join();
 	query = "SELECT * FROM makeupartist where username in (" + joinedArists + ");";
-	console.log(query)
 	const resu = await client.execute(query);
 	toReturn = [];
 	if (resu.rows.length == 0) {
@@ -500,6 +495,7 @@ app.post("/findArtist", async (req, res) => {
 						timeslot: resu.rows[i].get('timeslot'),
 						timeStarts: key,
 						price: artistspirice[resu.rows[i].get('username')],
+						city: [req.body.city]
 					})
 				}
 			})

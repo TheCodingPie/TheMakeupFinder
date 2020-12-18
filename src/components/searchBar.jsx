@@ -17,7 +17,7 @@ export default class SearchBar extends Component {
     }
   };
 
-  obradiInput = input => {
+  handleInput = input => {
     if (input.length !== 1) return;
     this.getArtists(input.charAt(0));
   };
@@ -27,10 +27,10 @@ export default class SearchBar extends Component {
       <Typeahead
         id="basic-example"
         labelKey="name"
-        onChange={selected => this.props.obradiIzbor(selected)}
+        onChange={selected => this.props.handleChoise(selected)}
         options={this.state.data}
         placeholder="Pretrazi sminkere"
-        onInputChange={input => this.obradiInput(input)}
+        onInputChange={input => this.handleInput(input)}
       />
     );
   }

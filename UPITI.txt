@@ -1,0 +1,64 @@
+
+CREATE KEYSPACE "MakeUp"
+WITH replication = {'class':'SimpleStrategy', 'replication_factor' : 1};
+
+create table artists
+(
+    username_first_letter text,
+    username              text,
+    primary key (username_first_letter, username)
+);
+
+create table comments
+(
+    artistusername text primary key,
+    artistcommnum  int,
+    comment1       text,
+    comment2       text,
+    comment3       text
+);
+
+create table images
+(
+    idartist    text,
+    id          text,
+    about       text,
+    counter_tag int,
+    datepost    date,
+    url         text,
+    primary key (idartist, id)
+);
+
+create table makeupartist
+(
+    username       text primary key,
+    alltogether    double,
+    city           list<text>,
+    datesfreed     list<text>,
+    description    text,
+    email          text,
+    lastname       text,
+    name           text,
+    numofreviews   int,
+    password       text,
+    price          int,
+    stars          double,
+    timeslot       int
+);
+
+create table person
+(
+    username text primary key,
+    email    text,
+    lastname text,
+    name     text,
+    password text
+);
+
+
+create table sessions
+(
+    sessionID    text,
+     username     text,
+    primary key (sessionID)
+);

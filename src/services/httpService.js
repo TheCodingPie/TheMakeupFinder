@@ -22,6 +22,26 @@ export default class httpService {
 
   }
 
+  static getAppointments = async (username) => {
+    try {
+      const fetchUrl = domain + 'returnAllAppointments/' + username;
+      const response = await fetch(fetchUrl, {
+        method: 'GET',
+        credentials: 'include'
+      });
+      if (response.status !== 200) {
+        return false
+      }
+      else {
+        return response.json();
+      }
+    }
+    catch (e) {
+      console.log(e);
+      return false;
+    }
+
+  }
   static getBookings = async (username) => {
     try {
       const fetchUrl = domain + 'returnBookingsForClient/' + username;

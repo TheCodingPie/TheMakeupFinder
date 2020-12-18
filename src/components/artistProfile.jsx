@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Button } from 'react-bootstrap';
-import ReturnDescription from "./returnDescription";
+import ArtistDescription from "./artistDescription";
 import httpService from "../services/httpService"
 import Comments from "./comments";
 import Images from "./images";
@@ -49,7 +49,7 @@ export default class ArtistProfile extends Component {
   render() {
     return (
       <div style={{ backgroundColor: 'whitesmoke', flex: 1, width: '100%' }}>
-        <ReturnDescription artistData={this.state.artistData} />
+        <ArtistDescription artistData={this.state.artistData} />
         { this.state.images.length > 0 && <Images images={this.state.images} />}
         {(this.props.location.state.clientUsername === undefined) ? null : <div style={{ display: 'flex', justifyContent: 'center' }}> <Button className="btn btn-primary " onClick={this.goToAddComment}>Dodaj komentar</Button></div>}
         <Comments comments={this.state.comments} />

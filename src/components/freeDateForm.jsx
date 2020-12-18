@@ -2,6 +2,7 @@ import DatePicker from "react-datepicker";
 import TimePicker from "rc-time-picker";
 import React, { Component } from "react";
 import moment from "moment";
+import { Button } from 'react-bootstrap'
 export default class FreeDateForm extends Component {
     constructor(props) {
         super(props);
@@ -45,49 +46,35 @@ export default class FreeDateForm extends Component {
     };
     render() {
         return (
-            <div className="login">
-                <h3
-
-                >
-                    Oslobadjanje termina
-          </h3>
-
-
-                <label>Datum </label>
-                <DatePicker
-                    selected={this.state.date}
-                    onChange={this.handleChangeDate}
-                    style={{ backgroundColor: "red" }}
-                />
-                <div style={{ display: "flex", flexDirection: "row" }}>
+            <div style={{ display: "flex", flexDirection: 'column', alignItems: 'center', }}>
+                <h3 > Oslobadjanje termina  </h3>
+                <div className="form-group">
+                    <label>Datum </label>
+                    <DatePicker
+                        selected={this.state.date}
+                        onChange={this.handleChangeDate} />
+                </div>
+                <div style={{ display: "flex" }} >
                     <label>Od </label>
                     <TimePicker
                         style={{ width: 100 }}
                         showSecond={false}
                         defaultValue={moment()}
                         className="xxx"
-                        onChange={this.onChangeTimeFrom}
-                    />
+                        onChange={this.onChangeTimeFrom} />
                     <label>Do </label>
                     <TimePicker
                         style={{ width: 100 }}
                         showSecond={false}
                         defaultValue={moment()}
                         className="xxx"
-                        onChange={this.onChangeTimeTo}
-                    />
+                        onChange={this.onChangeTimeTo} />
                 </div>
                 <label style={{ color: "red" }}>{this.props.errorMessage}</label>
-                <button
-
-                    className="  btn-primary"
-                    style={{ backgroundColor: "blue" }}
-                    onClick={() => this.props.freeDate(this.state.timeFrom, this.state.timeTo, this.state.parsedDate)}
-                >
+                <Button onClick={() => this.props.freeDate(this.state.timeFrom, this.state.timeTo, this.state.parsedDate)}>
                     Oslobodi termine
-          </button>
+                </Button>
             </div>
         );
-
     }
 }

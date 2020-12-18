@@ -17,7 +17,6 @@ export default class ClientHomePage extends React.Component {
     else {
       this.state = {
         person: this.props.location.state.person,
-        parsedDate: "",
         message: "",
         cities: [],
         showModalAvailableArtists: false,

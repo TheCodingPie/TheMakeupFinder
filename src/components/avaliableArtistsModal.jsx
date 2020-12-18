@@ -29,24 +29,17 @@ export default class AvaliableArtistsModal extends Component {
     this.setState({ artists });
   };
 
-
   render() {
     return (
       <Modal show={this.props.showModal} size="md" aria-labelledby="contained-modal-title-vcenter" centered onHide={this.onHide} >
         <Modal.Body className="justify-content-center col ">
           <ListGroup>
             {!this.props.success && this.props.artists.map((artist, index) => (
-              <ListGroup.Item>
+              <ListGroup.Item key={index}>
                 <h2 >{artist.username}</h2>
-                <div style={{ display: "flex", flexDirection: "row", flex: 1, width: '100%' }}>
-                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                    <label>Broj ocena: {artist.numofReviews}</label>
-                    <label>Ocena: {artist.stars}</label>
-                  </div>
-                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                    <label>Vreme pocetka: {artist.timeStarts} h</label>
-                    <label>Cena: {artist.price} din</label>
-                  </div>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                  <label>Vreme pocetka: {artist.timeStarts} h</label>
+                  <label>Cena: {artist.price} din</label>
                 </div>
                 <div style={{ display: "flex", flexDirection: "row", flex: 1, justifyContent: 'space-between' }}>
                   <Button onClick={() => this.props.viewArtistProfile(artist)}> Videti profil</Button>

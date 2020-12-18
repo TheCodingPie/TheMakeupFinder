@@ -12,7 +12,6 @@ export default class Images extends Component {
                         height={300}
                         className="align-self-start ml-2 "
                         src={item} alt="radi" class="img-thumbnail" />
-
                 </div>
             )
         });
@@ -26,6 +25,5 @@ export default class Images extends Component {
                 </div>
             </Container>
         )
-
     }
 }

@@ -17,7 +17,7 @@ export default class BookingNavbar extends React.Component {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
-              <SearchBar obradiIzbor={this.props.goToArtistProfile}></SearchBar>
+              <SearchBar handleChoise={this.props.goToArtistProfile}></SearchBar>
               <button type="submit" className="btn" onClick={this.props.goToBookedAppointments} >
                 Zakazani termini
             </button>

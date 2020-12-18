@@ -1,6 +1,6 @@
 import React from 'react';
 import firebase from '../Firebase cofiguration/FirebaseConfiguration';
-import { FormControl, Button, Col, Image, Container, Row, Media, Modal } from 'react-bootstrap';
+import { Col, Image, Container, Row, Media, } from 'react-bootstrap';
 import httpService from "../services/httpService"
 import VerticallyCenteredModal from './verticallyCenteredModal'
 var storageRef = firebase.storage().ref();
@@ -47,24 +47,17 @@ export default class ImageUpload extends React.Component {
     this.saveImageToDataBase();
   }
 
-  onChangeAbout = (e) => {
-    this.setState({ aboutImage: e.target.value });
-  }
-
   hideModal = () => {
     this.setState({ modalShow: false })
     window.location.reload(true);
   }
 
   render() {
-
     return (
       <div style={{ flexGrow: 1, width: '100%' }}>
-
         <Container>
           <Row>
             <Col></Col>
-
             <Col xs={9}>
               <h5>Dodavanje fotografije</h5>
               <div class="custom-file mb-3 mt-3" >
@@ -72,26 +65,16 @@ export default class ImageUpload extends React.Component {
                 <label class="custom-file-label" for="inputGroupFile04">Izaberite fotografiju</label>
                 <br />
               </div>
-
               <Container class="mt-6">
-                <Col xs={12}>
-                  <Media >
-                    <Image width={250}
-                      height={250}
-                      className="align-self-start mr-3"
-                      src={this.state.urlImageLocal} />
-
-                    <Media.Body xs={2}>
-                      <FormControl as="textarea" aria-label="With textarea" placeholder="Unesite opis fotografije" onChange={this.onChangeAbout} />
-                    </Media.Body>
-
-                  </Media>
-
-                </Col>
-
+                <Media style={{ display: 'flex', justifyContent: 'center' }} >
+                  <Image width={250}
+                    height={250}
+                    className="align-self-start mr-3"
+                    src={this.state.urlImageLocal} />
+                </Media>
               </Container>
               <br />
-              <div class="d-flex flex-row-reverse bd-highlight">
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <button class="btn btn-primary" onClick={() => this.addToFirebase()} >Dodaj fotografiju</button>
               </div>
             </Col>
