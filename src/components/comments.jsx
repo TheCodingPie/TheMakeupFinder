@@ -6,8 +6,8 @@ export default class Comments extends Component {
     }
     printComments = () => {
         let elements = [];
-        this.props.comments.map((item, index) =>
-            elements.push(<ListGroup.Item action variant="info" key={index}> <div className="col">  <h5> {item.slice(item.indexOf('=') + 2, item.length)}  </h5> <h6>{item.slice(0, item.indexOf(' ') + 1)}  {item.slice(item.indexOf(' ') + 1, item.indexOf('=') - 1)}</h6>  </div>  </ListGroup.Item>)
+        this.props.comments.map(item =>
+            elements.push(<ListGroup.Item action variant="info" key={item}> <div className="col">  <h5> {item.slice(item.indexOf('=') + 2, item.length)}  </h5> <h6>{item.slice(0, item.indexOf(' ') + 1)}  {item.slice(item.indexOf(' ') + 1, item.indexOf('=') - 1)}</h6>  </div>  </ListGroup.Item>)
         );
         return elements;
     }

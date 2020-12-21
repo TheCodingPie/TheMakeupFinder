@@ -6,11 +6,9 @@ import { FormControl } from 'react-bootstrap';
 export default class AddCommentModal extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       comment: "",
       modalContent: ""
-
     };
   }
 

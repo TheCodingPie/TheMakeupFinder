@@ -35,7 +35,7 @@ export default class ImageUpload extends React.Component {
 
   onChangeImage = (e) => {
     this.setState({ file: e.target.files[0] });
-    this.setState({ idPhoto: this.state.idPhoto + 1 });
+    this.setState(prevState => ({ idPhoto: prevState.idPhoto + 1 }));
     this.setState({ urlImageLocal: URL.createObjectURL(e.target.files[0]) });
 
   }

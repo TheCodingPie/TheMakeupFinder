@@ -35,7 +35,7 @@ export default class AvaliableArtistsModal extends Component {
         <Modal.Body className="justify-content-center col ">
           <ListGroup>
             {!this.props.success && this.props.artists.map((artist, index) => (
-              <ListGroup.Item key={index}>
+              <ListGroup.Item key={artist}>
                 <h2 >{artist.username}</h2>
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                   <label>Vreme pocetka: {artist.timeStarts} h</label>

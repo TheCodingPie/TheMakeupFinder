@@ -35,15 +35,12 @@ export default class BookingForm extends React.Component {
     this.setState({ priceTo: event.target.value });
   }
   handleChangeDate = async date => {
-    await this.setState({
-      date
-    });
+    await this.setState({ date });
     let parsedDate = "";
     parsedDate += this.state.date.getFullYear() + "_";
     let month = this.state.date.getMonth() + 1;
     parsedDate += month + "_";
     parsedDate += this.state.date.getDate();
-
     this.setState({ parsedDate });
   };
   onChangeTimeFrom = async value => {
@@ -59,9 +56,7 @@ export default class BookingForm extends React.Component {
     });
   };
   printCityToSelect = () => {
-    let elements = this.state.cities.map((item, index) => {
-      return (<option key={index} value={item}> {item} </option>);
-    });
+    let elements = this.state.cities.map(item => (<option key={item} value={item}> {item} </option>))
     return elements;
   };
 

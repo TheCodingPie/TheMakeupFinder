@@ -5,9 +5,9 @@ export default class Images extends Component {
         super(props);
     }
     printImages = () => {
-        let findImages = this.props.images.map((item, index) => {
+        let findImages = this.props.images.map(item => {
             return (
-                <div key={index} className="d-flex  align-self-start flex-column mr-2 ml-2 mb-2 " >
+                <div key={item} className="d-flex  align-self-start flex-column mr-2 ml-2 mb-2 " >
                     <Image width={300}
                         height={300}
                         className="align-self-start ml-2 "
