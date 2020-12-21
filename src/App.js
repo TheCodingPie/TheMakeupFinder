@@ -9,6 +9,7 @@ import ArtistHomePage from './components/artistHomePage'
 import ClientHomePage from "./components/clientHomePage";
 import ArtistProfile from "./components/artistProfile";
 import ImageUpload from './components/ImageUpload'
+import BadUrl from './components/badUrl'
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/artistHomePage" component={ArtistHomePage} />
         <Route path="/artistProfile" component={ArtistProfile} />
         <Route path="/addImagePage" component={ImageUpload} />
+        <Route component={BadUrl} />
       </Switch>
     </Router>
   );

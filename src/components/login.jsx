@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "../style/bookingPage.css";
 import httpService from "../services/httpService"
 import LoginForm from "./loginForm";
+import { Spinner } from 'react-bootstrap'
 
 export default class Login extends Component {
   constructor(props) {
@@ -38,9 +39,7 @@ export default class Login extends Component {
     }
   }
   componentDidMount = async () => {
-
     let profileData = await httpService.sessionLogin();
-    console.log(profileData)
     if (profileData) {
       if (profileData.type == "Client") {
         this.props.history.push({
@@ -82,7 +81,7 @@ export default class Login extends Component {
       )
     }
     else {
-      return (null)
+      return (<Spinner animation="border" />)
     }
   }
 
