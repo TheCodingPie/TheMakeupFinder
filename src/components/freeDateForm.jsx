@@ -8,7 +8,7 @@ export default class FreeDateForm extends Component {
 
         this.state = {
             date: new Date(),
-            timeFrom: '07:30',
+            timeFrom: '07:00',
             timeTo: '17:00',
             parsedDate: new Date(),
         };
@@ -59,7 +59,7 @@ export default class FreeDateForm extends Component {
                         style={{ marginRight: '10px' }}
                         label="Od"
                         type="time"
-                        defaultValue='07:30'
+                        defaultValue='07:00'
                         onChange={this.onChangeTimeTo}
                     />
 

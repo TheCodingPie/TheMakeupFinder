@@ -54,10 +54,10 @@ export default class FreeDateModal extends Component {
       appointments.push(hours + ":" + minutes);
     }
     var ter = appointments.join(" ");
-    this.setState({ modalDates: ter })
+    //this.setState({ modalDates: ter })
     const response = await httpService.freeDate(this.state.myData.username, date, timeFrom, timeTo, appointments);
     if (response == "Uspesno dodato") {
-      this.setState({ modalData: "Uspesno ste dodali termine:", errorMessage: "" })
+      this.setState({ modalData: "Uspesno ste dodali termine:", errorMessage: "", modalDates: ter })
     }
     else {
       this.setState({ modalData: "Vec ste oslobodili ove termine.", modalDates: "" });
