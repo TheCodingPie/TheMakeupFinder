@@ -12,6 +12,7 @@ export default class Scheduler extends React.Component {
   render() {
     return (
       <Calendar
+        style={{ backgroundColor: 'white', borderRadius: '10px' }}
         eventPropGetter={(event) => {
           let newStyle = {
             backgroundColor: "yellow",

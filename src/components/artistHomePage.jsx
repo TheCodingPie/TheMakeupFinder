@@ -81,7 +81,7 @@ export default class ArtistHomePage extends Component {
   }
   render() {
     return (
-      <div style={{ display: 'flex', flexGrow: 1, flexBasis: 1, flexDirection: 'column', width: '100%', alignItems: 'center', }}>
+      <div style={{ display: 'flex', flexGrow: 1, flexBasis: 1, flexDirection: 'column', width: '100%', alignItems: 'center', backgroundColor: '#ece9f0' }}>
         <ArtistNavbar goToAddImage={this.goToAddImage} goToMyProfile={this.goToMyProfile} goToFreeDates={this.goToFreeDates} logout={this.logout} />
         <div
           style={{

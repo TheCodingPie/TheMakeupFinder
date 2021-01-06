@@ -10,9 +10,11 @@ export default class BookingNavbar extends React.Component {
     return (
       <div
         style={{
-          width: "100%",
+          width: "60%",
+        }}>
+        <Navbar expand="lg" style={{
+          borderRadius: '10px'
         }} >
-        <Navbar expand="lg"  >
           <Navbar.Brand>MakeUpFinder</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
@@ -20,13 +22,12 @@ export default class BookingNavbar extends React.Component {
               <SearchBar handleChoise={this.props.goToArtistProfile}></SearchBar>
               <button type="submit" className="btn" onClick={this.props.goToBookedAppointments} >
                 Zakazani termini
+            </button> </Nav>
+            <button type="submit" className="btn" onClick={this.props.logout}>
+              Odjavi se
             </button>
-              <button type="submit" className="btn" onClick={this.props.logout}>
-                Odjavi se
-            </button>
-            </Nav>
           </Navbar.Collapse>
         </Navbar>
-      </div>)
+      </div >)
   }
 }
