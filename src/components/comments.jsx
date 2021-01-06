@@ -17,9 +17,11 @@ export default class Comments extends Component {
                 <div className="justify-content-center row">
                     <h3 style={{ color: 'black', alignSelf: 'center' }}>Komentari</h3>
                 </div>
-                <ListGroup>
-                    {this.printComments()}
-                </ListGroup>
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <ListGroup style={{ width: '60%' }}>
+                        {this.printComments()}
+                    </ListGroup>
+                </div>
             </div>
         )
     }

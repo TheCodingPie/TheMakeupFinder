@@ -1,7 +1,6 @@
 import DatePicker from "react-datepicker";
-import TimePicker from "rc-time-picker";
+import { TextField } from '@material-ui/core'
 import React, { Component } from "react";
-import moment from "moment";
 import { Button } from 'react-bootstrap'
 export default class FreeDateForm extends Component {
     constructor(props) {
@@ -9,8 +8,8 @@ export default class FreeDateForm extends Component {
 
         this.state = {
             date: new Date(),
-            timeFrom: moment().format("HH:mm"),
-            timeTo: moment().format("HH:mm"),
+            timeFrom: '07:30',
+            timeTo: '17:00',
             parsedDate: new Date(),
         };
     }
@@ -33,15 +32,15 @@ export default class FreeDateForm extends Component {
         this.setState({ parsedDate });
     };
     onChangeTimeFrom = async value => {
-        if (value === null) return;
+        if (value.target.value === null) return;
         await this.setState({
-            timeFrom: value.format("HH:mm")
+            timeFrom: value.target.value
         });
     };
     onChangeTimeTo = async value => {
-        if (value === null) return;
+        if (value.target.value === null) return;
         await this.setState({
-            timeTo: value.format("HH:mm")
+            timeTo: value.target.value
         });
     };
     render() {
@@ -55,20 +54,22 @@ export default class FreeDateForm extends Component {
                         onChange={this.handleChangeDate} />
                 </div>
                 <div style={{ display: "flex" }} >
-                    <label>Od </label>
-                    <TimePicker
-                        style={{ width: 100 }}
-                        showSecond={false}
-                        defaultValue={moment()}
-                        className="xxx"
-                        onChange={this.onChangeTimeFrom} />
-                    <label>Do </label>
-                    <TimePicker
-                        style={{ width: 100 }}
-                        showSecond={false}
-                        defaultValue={moment()}
-                        className="xxx"
-                        onChange={this.onChangeTimeTo} />
+
+                    <TextField
+                        style={{ marginRight: '10px' }}
+                        label="Od"
+                        type="time"
+                        defaultValue='07:30'
+                        onChange={this.onChangeTimeTo}
+                    />
+
+
+                    <TextField
+                        label="Do"
+                        type="time"
+                        defaultValue='17:00'
+                        onChange={this.onChangeTimeTo}
+                    />
                 </div>
                 <label style={{ color: "red" }}>{this.props.errorMessage}</label>
                 <Button onClick={() => this.props.freeDate(this.state.timeFrom, this.state.timeTo, this.state.parsedDate)}>

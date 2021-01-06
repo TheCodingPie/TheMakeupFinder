@@ -73,9 +73,9 @@ export default class Login extends Component {
       return (
         <div className="celaStrana">
           <div className="horizontalno">
-            <div className="iznadIIspod1"></div>
+            <div style={{ flex: '15' }}></div>
             <LoginForm login={this.login} color={this.state.color} createProfileClient={this.createProfileClient} createProfileArtist={this.createProfileArtist} />
-            <div className="iznadIIspod1" ></div>
+            <div style={{ flex: '15' }} ></div>
           </div>
         </div>
       )
