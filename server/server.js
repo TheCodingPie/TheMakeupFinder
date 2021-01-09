@@ -638,66 +638,55 @@ app.post("/freeDate/", async (req, res) => {
 });
 
 async function addDateColumnIfNotExist(date, id, toAdd, timeFrom, timeTo) {
-
-	query = "SELECT * FROM system_schema.columns WHERE keyspace_name = 'MakeUp' and table_name='makeupartist' and column_name='" + date + "' ;";
-	const result = await client.execute(query);
-	let pom = date + 'time';
-	if (result.rows.length == 0) {
-
-		query = "alter table makeupartist add ( " + date + " map<text,text> , " + pom + " list<text>) ";
-
-		await client.execute(query);
-		query = "update  makeupartist set " + date + "= " + toAdd + " ,datesfreed=['" + date + "'] + datesfreed ," + pom + "=['" + timeFrom + "' , '" + timeTo + "'] where  username='" + id + "' ;";
-
-		await client.execute(query);
-
-
-	}
-	else {
-		query = "SELECT " + date + " from makeupartist where username=? ;";
-		const result = await client.execute(query, [id]);
-
-
-		if (result.first()[date] == null) {
+	try {
+		query = "SELECT * FROM system_schema.columns WHERE keyspace_name = 'MakeUp' and table_name='makeupartist' and column_name='" + date + "' ;";
+		const result = await client.execute(query);
+		let pom = date + 'time';
+		if (result.rows.length == 0) {
+			query = "alter table makeupartist add ( " + date + " map<text,text> , " + pom + " list<text>) ";
+			await client.execute(query);
 			query = "update  makeupartist set " + date + "= " + toAdd + " ,datesfreed=['" + date + "'] + datesfreed ," + pom + "=['" + timeFrom + "' , '" + timeTo + "'] where  username='" + id + "' ;";
-
 			await client.execute(query);
 		}
 		else {
-			query = "select " + pom + " from makeupartist where  username=?"
-			let timeAlreadyFreed = await client.execute(query, [id]);
-			let dates = timeAlreadyFreed.first()[pom];
-			let from, to, toBreak;
-			toBreak = false;
-			for (let i = 0; i < dates.length; i += 2) {
-				if (toBreak)
-					break;
-				from = dates[i];
-				to = dates[i + 1];
+			query = "SELECT " + date + " from makeupartist where username=? ;";
+			const result = await client.execute(query, [id]);
+			if (result.first()[date] == null) {
+				query = "update  makeupartist set " + date + "= " + toAdd + " ,datesfreed=['" + date + "'] + datesfreed ," + pom + "=['" + timeFrom + "' , '" + timeTo + "'] where  username='" + id + "' ;";
 
-				if ((timeFrom >= from && timeFrom <= to) || (timeTo >= from && timeTo <= to))
-					toBreak = true;
-
-
+				await client.execute(query);
 			}
-			if (toBreak)
-				return "Nije validno vreme"
+			else {
+				query = "select " + pom + " from makeupartist where  username=?"
+				let timeAlreadyFreed = await client.execute(query, [id]);
+				let dates = timeAlreadyFreed.first()[pom];
+				let from, to, toBreak;
+				toBreak = false;
+				for (let i = 0; i < dates.length; i += 2) {
+					if (toBreak)
+						break;
+					from = dates[i];
+					to = dates[i + 1];
 
-			query = "update  makeupartist set " + date + "= " + date + "+ " + toAdd + " ," + pom + "=['" + timeFrom + "' , '" + timeTo + "'] +" + pom + " where  username='" + id + "' ;";
+					if ((timeFrom >= from && timeFrom <= to) || (timeTo >= from && timeTo <= to))
+						toBreak = true;
 
-
-			await client.execute(query);
-
+				}
+				if (toBreak)
+					return "Nije validno vreme"
+				query = "update  makeupartist set " + date + "= " + date + "+ " + toAdd + " ," + pom + "=['" + timeFrom + "' , '" + timeTo + "'] +" + pom + " where  username='" + id + "' ;";
+				await client.execute(query);
+			}
 		}
-
+		let datesFreed = await returnDatesForArtist(id);
+		if (!datesFreed.includes(date))
+			await updateDatesFreed(id, date);
+		return "Uspesno dodato";
 	}
-	let datesFreed = await returnDatesForArtist(id);
-	if (!datesFreed.includes(date))
-		await updateDatesFreed(id, date);
-
-	return "Uspesno dodato";
-
-
+	catch (error) {
+		console.log(error)
+		return "error"
+	}
 }
 
 app.post("/bookAppointment", async (req, res) => {
