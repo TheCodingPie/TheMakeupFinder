@@ -570,6 +570,7 @@ catch (error) {
 
 });
 app.get("/getImagesForArtist/:username", async (req, res) => {
+	try{
 	var params = [req.params.username];
 	var images = [];
 	var query = "select url from images where idartist= ? ";
@@ -580,9 +581,14 @@ app.get("/getImagesForArtist/:username", async (req, res) => {
 			console.log('Error returnAllTagsFromImage', err);
 		});
 	return res.json(images);
+	}
+	catch (error) {
+		console.log(error)
+	}
 })
 
 app.post("/findArtist", async (req, res) => {
+	try{
 	let timeFrom = req.body.timeFrom;
 	let timeTo = req.body.timeTo;
 	var session = driver.session();
@@ -629,9 +635,14 @@ app.post("/findArtist", async (req, res) => {
 
 
 	res.json(toReturn);
+}
+catch (error) {
+	console.log(error)
+}
 })
 
 app.get("/getNumberOfImages/:username", (req, res) => {
+	try{
 
 	let params = [req.params.username];
 	let query;
@@ -640,12 +651,16 @@ app.get("/getNumberOfImages/:username", (req, res) => {
 	client.execute(query, params, function (err, result) {
 
 		var numberOfImages = result.first()['count'];
-		console.log(numberOfImages)
 		res.json(numberOfImages);
 
 	});
+}
+catch (error) {
+	console.log(error)
+}
 });
 app.get("/returnAllAppointments/:id", async (req, res) => {
+	try{
 	query = "SELECT * FROM makeupartist where username=?;";
 	const result = await client.execute(query, [req.params.id]);
 	let toReturn = {};
@@ -662,10 +677,14 @@ app.get("/returnAllAppointments/:id", async (req, res) => {
 
 		res.json(toReturn);
 	}
+}
+catch (error) {
+	console.log(error)
+}
 })
 app.get("/getArtist/:id", async (req, res) => {
 
-
+try{
 	let tosnd = false;
 	let id = req.params.id;
 
@@ -689,12 +708,16 @@ app.get("/getArtist/:id", async (req, res) => {
 
 		res.json(tosnd);
 	}
-
+}
+catch (error) {
+	console.log(error)
+}
 
 });
 
 app.get("/artistInfo/:id", async (req, res) => {
 
+	try{
 	let id = req.params.id;
 
 	query = "SELECT * FROM makeupartist WHERE  username = ? ";
@@ -705,7 +728,7 @@ app.get("/artistInfo/:id", async (req, res) => {
 	tosnd["lastname"] = resu.rows[0].lastname;
 	tosnd["name"] = resu.rows[0].name;
 	tosnd["type"] = "Artist",
-		tosnd["city"] = resu.rows[0].city;
+	tosnd["city"] = resu.rows[0].city;
 	tosnd["description"] = resu.rows[0].description;
 	tosnd["numofreviews"] = resu.rows[0].numofreviews;
 	tosnd["stars"] = resu.rows[0].stars;
@@ -713,10 +736,15 @@ app.get("/artistInfo/:id", async (req, res) => {
 	tosnd["price"] = resu.rows[0].price;
 
 	res.json(tosnd);
+	}
+	catch (error) {
+		console.log(error)
+	}
 
 });
 
 app.get("/getCities", async (req, res) => {
+	try{
 	var session = driver.session();
 	var cypher = "match (c:City) return c.name";
 	var params = {};
@@ -729,9 +757,13 @@ app.get("/getCities", async (req, res) => {
 	})(result);
 	await session.close();
 	res.json(toReturn);
+}
+catch (error) {
+	console.log(error)
+}
 })
 app.get("/returnBookingsForClient/:username", async (req, res) => {
-
+try{
 	let id = req.params.username;
 	let session = driver.session();
 	const cypher = "match (c:Client{name:$client})-[r:BOOKED]->(a:Artist) return  r as rel ,a as artist";
@@ -744,11 +776,16 @@ app.get("/returnBookingsForClient/:username", async (req, res) => {
 	})
 
 	res.json(toRet);
+}
+catch (error) {
+	console.log(error)
+}
 
 });
 
 
 app.post("/freeDate/", async (req, res) => {
+	try{
 	let id = req.body.artistUsername;
 	let date = req.body.date;
 	let slots = req.body.appointments;
@@ -760,6 +797,10 @@ app.post("/freeDate/", async (req, res) => {
 	let helpme = JSON.stringify(mapslot).replace(/\"/g, "'")
 	let tosnde = await addDateColumnIfNotExist(date, id, helpme, req.body.timeFrom, req.body.timeTo);
 	res.json(tosnde);
+}
+catch (error) {
+	console.log(error)
+}
 });
 
 async function addDateColumnIfNotExist(date, id, toAdd, timeFrom, timeTo) {
@@ -816,7 +857,7 @@ async function addDateColumnIfNotExist(date, id, toAdd, timeFrom, timeTo) {
 
 app.post("/bookAppointment", async (req, res) => {
 
-
+try{
 	let id = req.body.artistUsername;
 	let date = req.body.date;
 	let time = req.body.time;
@@ -831,19 +872,33 @@ app.post("/bookAppointment", async (req, res) => {
 	await session.run(query, params);
 	session.close();
 	res.json('true');
+}
+catch (error) {
+	console.log(error)
+}
 });
 async function returnDatesForArtist(username) {
 
+	try{
 	let query = "select datesfreed from makeupartist where username=?";
 
 	const result = await client.execute(query, [username]);
 
 
 	return result.first()['datesfreed'];
+	}
+	catch (error) {
+		console.log(error)
+	}
 }
 async function updateDatesFreed(username, date) {
+	try{
 
 	let query = "update makeupartist set datesfreed=[" + date + "] + datesfreed where  username=?";
 	const result = await client.execute(query, username);
+	}
+	catch (error) {
+		console.log(error)
+	}
 
 }
