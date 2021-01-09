@@ -529,6 +529,7 @@ async function returnNewIdImage(idartist) {
 }
 
 app.post("/addComment", (req, res) => {
+	try{
 	comment = req.body.comment;
 	params = [req.body.artistUsername]
 	query1 = "select * from comments where artistusername= ? ";
@@ -562,6 +563,10 @@ app.post("/addComment", (req, res) => {
 		}
 
 	});
+}
+catch (error) {
+	console.log(error)
+}
 
 });
 app.get("/getImagesForArtist/:username", async (req, res) => {
