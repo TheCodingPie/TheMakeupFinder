@@ -13,9 +13,6 @@ create table comments
 (
     artistusername text primary key,
     artistcommnum  int,
-    comment1       text,
-    comment2       text,
-    comment3       text
 );
 
 create table images
