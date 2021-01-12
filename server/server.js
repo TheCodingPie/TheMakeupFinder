@@ -24,6 +24,7 @@ app.listen(1234, () => {
 });
 
 app.get("/sessionLogin", async (req, res) => {
+	try{
 	console.log('u sessionLogin')
 	console.log(req.sessionID);
 	let username = await sessionExists(req.sessionID)
@@ -36,9 +37,15 @@ app.get("/sessionLogin", async (req, res) => {
 	else {
 		res.json(false);
 	}
+}
+catch (error) {
+	console.log(error)
+	return "error"
+}
 });
 
 getUserData = (username, res) => {
+	try{
 	query = "SELECT * FROM person WHERE  username = ? ";
 
 	client.execute(query, [username], async (err, result) => {
@@ -58,7 +65,13 @@ getUserData = (username, res) => {
 
 	});
 }
+	catch (error) {
+		console.log(error)
+		return "error"
+}
+}
 getArtistData = async (username, res) => {
+	try{
 
 	query = "SELECT * FROM makeupartist WHERE  username = ? ";
 	let resu = await client.execute(query, [username]);
@@ -69,7 +82,7 @@ getArtistData = async (username, res) => {
 	tosnd["lastname"] = resu.rows[0].lastname;
 	tosnd["name"] = resu.rows[0].name;
 	tosnd["type"] = "Artist",
-		tosnd["city"] = resu.rows[0].city;
+	tosnd["city"] = resu.rows[0].city;
 	tosnd["description"] = resu.rows[0].description;
 	tosnd["numofreviews"] = resu.rows[0].numofreviews;
 	tosnd["stars"] = resu.rows[0].stars;
@@ -77,12 +90,16 @@ getArtistData = async (username, res) => {
 	tosnd["price"] = resu.rows[0].price;
 	res.json(tosnd);
 	return;
+	}
+	catch (error) {
+		console.log(error)
+		return "error"
+}
 
 }
 
 app.get("/login/:id/:password", async (req, res) => {
-	console.log('u login')
-	console.log(req.sessionID);
+try{
 	let tosnd = false;
 	let id = req.params.id;
 	let password = req.params.password;
@@ -105,17 +122,29 @@ app.get("/login/:id/:password", async (req, res) => {
 			loginArtist(res, id, req.sessionID);
 		}
 	});
+}
+catch (error) {
+	console.log(error)
+	return "error"
+}
 });
 
 
 app.get("/logout", async (req, res) => {
 
+	try{
 	let isDeleted = await deleteSession(req.sessionID);
 	res.json(isDeleted);
+	}
+	catch (error) {
+		console.log(error)
+		return "error"
+}
 
 });
 
 app.post("/addComment", (req, res) => {
+	try{
 	comment = req.body.comment;
 	params = [req.body.artistUsername]
 	query1 = "select * from comments where artistusername= ? ";
@@ -149,19 +178,30 @@ app.post("/addComment", (req, res) => {
 		}
 
 	});
+}
+catch (error) {
+	console.log(error)
+	return "error"
+}
 
 });
 
 deleteSession = async (sessionID) => {
-	console.log(sessionID);
+	try{
 
 	query = "DELETE FROM sessions WHERE  sessionID = ? ";
 
 	let result = await client.execute(query, [sessionID])
 	return result;
+	}
+	catch (error) {
+		console.log(error)
+		return "error"
+}
 }
 
 sessionExists = async (sessionID) => {
+	try{
 	query = "SELECT * FROM sessions WHERE  sessionID = ? ";
 	let result = await client.execute(query, [sessionID])
 	if (result.rows.length > 0) {
@@ -171,13 +211,25 @@ sessionExists = async (sessionID) => {
 		return false;
 	}
 }
+catch (error) {
+	console.log(error)
+	return "error"
+}
+}
 
 addSession = (sessionID, username) => {
+	try{
 	query = "INSERT INTO sessions(sessionID,username) VALUES (?,?);";
 	client.execute(query, [sessionID, username]);
+	}
+	catch (error) {
+		console.log(error)
+		return "error"
+}
 
 }
 loginArtist = async (res, id, sessionID) => {
+	try{
 	query = "SELECT * FROM makeupartist WHERE  username = ? ";
 	let resu = await client.execute(query, [id]);
 	if (resu.rows.length > 0) {
@@ -200,8 +252,14 @@ loginArtist = async (res, id, sessionID) => {
 	}
 	res.json(tosnd);
 }
+catch (error) {
+	console.log(error)
+	return "error"
+}
+}
 
 app.get("/createClient/:id/:password/:name/:lastname/:email", async (req, res) => {
+	try{
 	let id = req.params.id;
 	query = "select  * from makeupartist where username = ? ";
 	let resA = await client.execute(query, [id]);
@@ -222,9 +280,15 @@ app.get("/createClient/:id/:password/:name/:lastname/:email", async (req, res) =
 			}
 		});
 	}
+}
+catch (error) {
+	console.log(error)
+	return "error"
+}
 })
 
 addClientToNeo4j = (res, id) => {
+	try{
 	const session = driver.session();
 	const cypher = "create (c:Client{name:$name})";
 	const params = { name: id };
@@ -233,9 +297,15 @@ addClientToNeo4j = (res, id) => {
 			session.close();
 			res.json(true);
 		});
+	}
+	catch (error) {
+		console.log(error)
+		return "error"
+}
 }
 
 app.post("/createArtist", async (req, res) => {
+	try{
 	if (await usernameExists(req.body.username)) {
 		res.json('false');
 		return;
@@ -260,9 +330,15 @@ app.post("/createArtist", async (req, res) => {
 			console.log(err)
 			res.json('error');
 		});
+	}
+	catch (error) {
+		console.log(error)
+		return "error"
+}
 });
 
 addArtistToNeo4j = async (id, price, cities, res) => {
+	try{
 	const cypher1 = "create (p:Artist{name:$id,price:$price})";
 	let session1 = driver.session();
 	let params2 = { id: id, price: parseInt(price) };
@@ -286,10 +362,16 @@ addArtistToNeo4j = async (id, price, cities, res) => {
 		session.close();
 	});
 	res.json('Kreirali ste profil');
+}
+catch (error) {
+	console.log(error)
+	return "error"
+}
 
 }
 
 usernameExists = async (username) => {
+	try{
 	query = "SELECT * FROM person WHERE  username = ? ";
 	let result = await client.execute(query, [username]);
 	if (result.rows.length > 0) {
@@ -306,10 +388,15 @@ usernameExists = async (username) => {
 		}
 
 	}
+}	catch (error) {
+	console.log(error)
+	return "error"
+}
 }
 
 app.get("/getUsernames/:first_letter", (req, res) => {
 
+	try{
 	let params;
 	let query;
 	params = [req.params.first_letter]
@@ -322,12 +409,18 @@ app.get("/getUsernames/:first_letter", (req, res) => {
 
 		res.json(usernames);//pretvara ga u json i ujednolo ga i salje
 	});
+}
+catch (error) {
+	console.log(error)
+	return "error"
+}
 
 
 });
 
 app.get("/artistInfo/:id", async (req, res) => {
 
+	try{
 	let id = req.params.id;
 
 	query = "SELECT * FROM makeupartist WHERE  username = ? ";
@@ -346,10 +439,16 @@ app.get("/artistInfo/:id", async (req, res) => {
 	tosnd["price"] = resu.rows[0].price;
 
 	res.json(tosnd);
+	}
+	catch (error) {
+		console.log(error)
+		return "error"
+}
 
 });
 app.post('/addImageToImageTable', async function (req, res) {
 
+	try{
 	var userame = req.body.username;
 	var tags = req.body.tags;
 	var url = req.body.url;
@@ -358,9 +457,15 @@ app.post('/addImageToImageTable', async function (req, res) {
 	var countTags = tags.length;
 	await addImageToDatabase(newId, url, userame, about, countTags);
 	res.json(newId);
+	}
+	catch (error) {
+		console.log(error)
+		return "error"
+}
 });
 async function addImageToDatabase(newId, url, user_id, about, counterTags) {
 
+	try{
 	var succesfull = false;
 	var query = "INSERT INTO images (id, url, idartist,about,counter_tag, datepost) values (?, ? ,? ,?, ? ,? )";
 	var params = [newId.toString(), url, user_id, about, counterTags, new Date()];
@@ -369,9 +474,13 @@ async function addImageToDatabase(newId, url, user_id, about, counterTags) {
 			console.log('Error addImageToDatabase :-S', err);
 		});
 	return succesfull;
+	}	catch (error) {
+		console.log(error)
+		return "error"
+}
 }
 app.get("/getComments/:artistUsername", (req, res) => {
-
+try{
 	let params = [req.params.artistUsername]
 	let query = " select artistcommnum from comments where artistusername= ? ";
 
@@ -396,19 +505,31 @@ app.get("/getComments/:artistUsername", (req, res) => {
 			});
 		}
 	});
+}
+catch (error) {
+	console.log(error)
+	return "error"
+}
 
 });
 
 async function returnNewIdImage(idartist) {
+	try{
 	var numberofId = 0;
 	var query = "select count(*) from images where idartist= ? "
 	var params = [idartist];
 	await client.execute(query, params, { prepare: true })
 		.then(res => numberofId = res.first()['count']);
 	return ++numberofId;
+	}
+	catch (error) {
+		console.log(error)
+		return "error"
+}
 }
 
 app.post("/addComment", (req, res) => {
+	try{
 	comment = req.body.comment;
 	params = [req.body.artistUsername]
 	query1 = "select * from comments where artistusername= ? ";
@@ -442,9 +563,14 @@ app.post("/addComment", (req, res) => {
 		}
 
 	});
+}
+catch (error) {
+	console.log(error)
+}
 
 });
 app.get("/getImagesForArtist/:username", async (req, res) => {
+	try{
 	var params = [req.params.username];
 	var images = [];
 	var query = "select url from images where idartist= ? ";
@@ -455,9 +581,14 @@ app.get("/getImagesForArtist/:username", async (req, res) => {
 			console.log('Error returnAllTagsFromImage', err);
 		});
 	return res.json(images);
+	}
+	catch (error) {
+		console.log(error)
+	}
 })
 
 app.post("/findArtist", async (req, res) => {
+	try{
 	let timeFrom = req.body.timeFrom;
 	let timeTo = req.body.timeTo;
 	var session = driver.session();
@@ -504,9 +635,14 @@ app.post("/findArtist", async (req, res) => {
 
 
 	res.json(toReturn);
+}
+catch (error) {
+	console.log(error)
+}
 })
 
 app.get("/getNumberOfImages/:username", (req, res) => {
+	try{
 
 	let params = [req.params.username];
 	let query;
@@ -515,12 +651,16 @@ app.get("/getNumberOfImages/:username", (req, res) => {
 	client.execute(query, params, function (err, result) {
 
 		var numberOfImages = result.first()['count'];
-		console.log(numberOfImages)
 		res.json(numberOfImages);
 
 	});
+}
+catch (error) {
+	console.log(error)
+}
 });
 app.get("/returnAllAppointments/:id", async (req, res) => {
+	try{
 	query = "SELECT * FROM makeupartist where username=?;";
 	const result = await client.execute(query, [req.params.id]);
 	let toReturn = {};
@@ -537,10 +677,14 @@ app.get("/returnAllAppointments/:id", async (req, res) => {
 
 		res.json(toReturn);
 	}
+}
+catch (error) {
+	console.log(error)
+}
 })
 app.get("/getArtist/:id", async (req, res) => {
 
-
+try{
 	let tosnd = false;
 	let id = req.params.id;
 
@@ -564,12 +708,16 @@ app.get("/getArtist/:id", async (req, res) => {
 
 		res.json(tosnd);
 	}
-
+}
+catch (error) {
+	console.log(error)
+}
 
 });
 
 app.get("/artistInfo/:id", async (req, res) => {
 
+	try{
 	let id = req.params.id;
 
 	query = "SELECT * FROM makeupartist WHERE  username = ? ";
@@ -580,7 +728,7 @@ app.get("/artistInfo/:id", async (req, res) => {
 	tosnd["lastname"] = resu.rows[0].lastname;
 	tosnd["name"] = resu.rows[0].name;
 	tosnd["type"] = "Artist",
-		tosnd["city"] = resu.rows[0].city;
+	tosnd["city"] = resu.rows[0].city;
 	tosnd["description"] = resu.rows[0].description;
 	tosnd["numofreviews"] = resu.rows[0].numofreviews;
 	tosnd["stars"] = resu.rows[0].stars;
@@ -588,10 +736,15 @@ app.get("/artistInfo/:id", async (req, res) => {
 	tosnd["price"] = resu.rows[0].price;
 
 	res.json(tosnd);
+	}
+	catch (error) {
+		console.log(error)
+	}
 
 });
 
 app.get("/getCities", async (req, res) => {
+	try{
 	var session = driver.session();
 	var cypher = "match (c:City) return c.name";
 	var params = {};
@@ -604,9 +757,13 @@ app.get("/getCities", async (req, res) => {
 	})(result);
 	await session.close();
 	res.json(toReturn);
+}
+catch (error) {
+	console.log(error)
+}
 })
 app.get("/returnBookingsForClient/:username", async (req, res) => {
-
+try{
 	let id = req.params.username;
 	let session = driver.session();
 	const cypher = "match (c:Client{name:$client})-[r:BOOKED]->(a:Artist) return  r as rel ,a as artist";
@@ -619,11 +776,16 @@ app.get("/returnBookingsForClient/:username", async (req, res) => {
 	})
 
 	res.json(toRet);
+}
+catch (error) {
+	console.log(error)
+}
 
 });
 
 
 app.post("/freeDate/", async (req, res) => {
+	try{
 	let id = req.body.artistUsername;
 	let date = req.body.date;
 	let slots = req.body.appointments;
@@ -635,6 +797,10 @@ app.post("/freeDate/", async (req, res) => {
 	let helpme = JSON.stringify(mapslot).replace(/\"/g, "'")
 	let tosnde = await addDateColumnIfNotExist(date, id, helpme, req.body.timeFrom, req.body.timeTo);
 	res.json(tosnde);
+}
+catch (error) {
+	console.log(error)
+}
 });
 
 async function addDateColumnIfNotExist(date, id, toAdd, timeFrom, timeTo) {
@@ -691,7 +857,7 @@ async function addDateColumnIfNotExist(date, id, toAdd, timeFrom, timeTo) {
 
 app.post("/bookAppointment", async (req, res) => {
 
-
+try{
 	let id = req.body.artistUsername;
 	let date = req.body.date;
 	let time = req.body.time;
@@ -706,19 +872,33 @@ app.post("/bookAppointment", async (req, res) => {
 	await session.run(query, params);
 	session.close();
 	res.json('true');
+}
+catch (error) {
+	console.log(error)
+}
 });
 async function returnDatesForArtist(username) {
 
+	try{
 	let query = "select datesfreed from makeupartist where username=?";
 
 	const result = await client.execute(query, [username]);
 
 
 	return result.first()['datesfreed'];
+	}
+	catch (error) {
+		console.log(error)
+	}
 }
 async function updateDatesFreed(username, date) {
+	try{
 
 	let query = "update makeupartist set datesfreed=[" + date + "] + datesfreed where  username=?";
 	const result = await client.execute(query, username);
+	}
+	catch (error) {
+		console.log(error)
+	}
 
 }
